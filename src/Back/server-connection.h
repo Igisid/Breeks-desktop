@@ -15,9 +15,11 @@ namespace Network {
     Q_OBJECT
   public:
     ServerConnection(QObject *parent = nullptr);
-    ServerConnection(QNetworkAccessManager *, Network::UserData * , QObject *parent = nullptr);
+  ServerConnection(std::shared_ptr<QNetworkAccessManager>, std::shared_ptr<Network::UserData>,
+                   QObject *parent = nullptr);
 
     Network::UserData * getUserData();
+  std::shared_ptr<Network::UserData> getUserData();
 
     QString resolveAccessTokenFromRequest();
     QString resolveRefreshTokenFromRequest();
@@ -50,10 +52,10 @@ namespace Network {
     void sendGetRequestWithBearerToken(const QUrl&, const QString&); // !
 
   private:
-    QNetworkAccessManager * networkAccessManager_;
-    Network::UserData * userData_;
-    QList<lastRequest_t> listOfLastRequests_;
-    bool mutex = false;
+  std::shared_ptr<QNetworkAccessManager> networkAccessManager_;
+  std::shared_ptr<UserData> userData_;
+  QList<lastRequest_t> listOfLastRequests_;
+  std::mutex mutex_;
 
   public slots:
     void onfinish(QNetworkReply *);

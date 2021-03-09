@@ -12,19 +12,14 @@ Network::ServerConnection::ServerConnection(QObject *parent):
   listOfLastRequests_(QList<lastRequest_t>())
 {}
 
-Network::ServerConnection::ServerConnection(QNetworkAccessManager * networkAccessManager,
-                                            Network::UserData * userData, QObject *parent):
-  QObject(parent),
-  networkAccessManager_(networkAccessManager),
-  userData_(userData),
-  listOfLastRequests_(QList<lastRequest_t>())
-{
-  connect(networkAccessManager_,SIGNAL(finished(QNetworkReply*)),this,SLOT(onfinish(QNetworkReply*)));
-  connect(this,SIGNAL(initSecretData(QString, QString, QString)),
-          userData_,SLOT(initSecretData(QString, QString, QString)));
+Network::ServerConnection::ServerConnection(std::shared_ptr<QNetworkAccessManager> networkAccessManager,
+                                            std::shared_ptr<UserData> userData, QObject *parent)
+    : QObject(parent), networkAccessManager_(networkAccessManager), userData_(userData) {
+  connect(networkAccessManager_.get(), &QNetworkAccessManager::finished, this, &ServerConnection::onfinish);
+  connect(this, &ServerConnection::initSecretData, userData_.get(), &UserData::initSecretData);
 }
 
-Network::UserData * Network::ServerConnection::getUserData() {
+std::shared_ptr<Network::UserData> Network::ServerConnection::getUserData() {
   return userData_;
 }
 
@@ -115,9 +110,11 @@ void Network::ServerConnection::sendGetRequestWithBearerToken(const QUrl & url, 
 
   networkAccessManager_->get(request);
 
-  if (!mutex) {
-    for (auto request : listOfLastRequests_) {
-      if (request.reqType == "GetWithToken") return;
+  {
+    std::lock_guard lk(mutex_);
+    for (const auto &request : std::as_const(listOfLastRequests_)) {
+      if (request.reqType == QLatin1String("GetWithToken"))
+        return;
     }
     listOfLastRequests_.append({QUrl(), QByteArray(), "GetWithToken"});
   }

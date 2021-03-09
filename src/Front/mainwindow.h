@@ -12,6 +12,7 @@
 #include <QGraphicsDropShadowEffect>
 #include <QDate>
 #include <QScrollArea>
+#include <memory>
 #include <set>
 #include <QDrag>
 
@@ -178,8 +179,8 @@ signals:
 private:
   Ui::MainWindow *ui;
 
-  Network::UserData *userData;
-  Network::ServerConnection *server;
+  std::shared_ptr<Network::UserData> userData;
+  std::unique_ptr<Network::ServerConnection> server;
 
   //last visit data about image and page in notes
   const QString fileLastVisitName_ = "fileLastVisit.txt";
@@ -308,7 +309,7 @@ private:
 
   QDate currentDate_;
   int iCurrentDay_;
-  QTimer *timer_;
+  std::unique_ptr<QTimer> timer_;
 
   bool isElementDrag_;
   QString oldStyle_;

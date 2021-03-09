@@ -33,8 +33,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
   this->showMaximized();
 
-  //TEST NETWORK
-  server = new Network::ServerConnection(new QNetworkAccessManager, new Network::UserData);
+  // TEST NETWORK
+  server = std::make_unique<Network::ServerConnection>(std::make_shared<QNetworkAccessManager>(),
+                                                       std::make_shared<Network::UserData>());
   userData = server->getUserData();
 
   // init week signals from server
