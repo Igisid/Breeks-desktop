@@ -1,41 +1,42 @@
 #include "Front/mainwindow.h"
 
-int MainWindow::addNewElementToArray(const elementData_t& newElement, const int index,
-                                     bool withRequest) {
+int MainWindow::addNewElementToArray(const elementData_t &newElement, const int index, bool withRequest) {
   if (newElement.idOnServer != -1 && withRequest) {
-    //server request
+    // server request
     QJsonObject json;
-    json.insert("tagColorNum", newElement.tagColorNum);
-    json.insert("mainText", newElement.text);
+    json.insert(QStringLiteral("tagColorNum"), newElement.tagColorNum);
+    json.insert(QStringLiteral("mainText"), newElement.text);
 
     QJsonArray jArr;
-    foreach(charStyle_t ch, newElement.charStyleVector) {
+    foreach (charStyle_t ch, newElement.charStyleVector) {
       QJsonObject jChar;
-      jChar.insert("bold", ch.bold);
-      jChar.insert("italic", ch.italic);
-      jChar.insert("underline", ch.underline);
-      jChar.insert("strike", ch.strike);
-      jChar.insert("item", ch.item);
-      jChar.insert("star", ch.star);
-      jChar.insert("sColor", ch.sColor);
-      jChar.insert("spellChecker", ch.spellChecker);
+      jChar.insert(QStringLiteral("bold"), ch.bold);
+      jChar.insert(QStringLiteral("italic"), ch.italic);
+      jChar.insert(QStringLiteral("underline"), ch.underline);
+      jChar.insert(QStringLiteral("strike"), ch.strike);
+      jChar.insert(QStringLiteral("item"), ch.item);
+      jChar.insert(QStringLiteral("star"), ch.star);
+      jChar.insert(QStringLiteral("sColor"), ch.sColor);
+      jChar.insert(QStringLiteral("spellChecker"), ch.spellChecker);
       jArr.push_back(jChar);
     }
     QJsonDocument jDoc;
     jDoc.setArray(jArr);
-    json.insert("effects", QString(jDoc.toJson()));
+    json.insert(QStringLiteral("effects"), QString(jDoc.toJson()));
 
-    json.insert("timeFrom", newElement.timeStart);
-    json.insert("timeTo", newElement.timeEnd);
-    json.insert("date", QDateTime(arrDays_[index].date).toMSecsSinceEpoch());
+    json.insert(QStringLiteral("timeFrom"), newElement.timeStart);
+    json.insert(QStringLiteral("timeTo"), newElement.timeEnd);
+    QDateTime dt;
+    dt.setDate(arrDays_[index].date);
+    json.insert(QStringLiteral("date"), dt.toMSecsSinceEpoch());
     QJsonDocument jsonDoc(json);
 
     QUrl url = QUrl(Network::serverUrl + Network::editTTElementUrl + '/' + QString::number(newElement.idOnServer));
-    server->sendPutRequestWithBearerToken(url , jsonDoc.toJson(), userData->getAccessToken());
+    server->sendPutRequestWithBearerToken(url, jsonDoc.toJson(), userData->getAccessToken());
   }
   //---------
 
-  if (arrDaysData_[index].size() == 0) {
+  if (arrDaysData_[index].empty()) {
     arrDaysData_[index].push_back(newElement);
     return 0;
   }
@@ -53,16 +54,13 @@ int MainWindow::addNewElementToArray(const elementData_t& newElement, const int 
         arrDaysData_[index].push_back(newElement);
         break;
       }
-    }
-    else if (newElement.timeStart < j->timeStart) {
+    } else if (newElement.timeStart < j->timeStart) {
       arrDaysData_[index].insert(j, newElement);
       break;
-    }
-    else if (newElement.timeStart == j->timeStart && newElement.timeEnd < j->timeEnd) {
+    } else if (newElement.timeStart == j->timeStart && newElement.timeEnd < j->timeEnd) {
       arrDaysData_[index].insert(j, newElement);
       break;
-    }
-    else if ((newElement.timeEnd == j->timeEnd) && (newElement.text < j->text)) {
+    } else if ((newElement.timeEnd == j->timeEnd) && (newElement.text < j->text)) {
       arrDaysData_[index].insert(j, newElement);
       break;
     }
@@ -77,7 +75,7 @@ int MainWindow::addNewElementToArray(const elementData_t& newElement, const int 
 }
 
 void MainWindow::addNewElementToLayout(const int index, const int newElementIndex) {
-  //clear layout
+  // clear layout
   for (int j = 0; j < arrDays_[index].elementsCount; ++j) {
     auto item = arrDays_[index].layoutDayElements->itemAt(0);
     arrDays_[index].layoutDayElements->removeItem(item);
@@ -90,7 +88,7 @@ void MainWindow::addNewElementToLayout(const int index, const int newElementInde
   ++arrDays_[index].elementsCount;
 
   for (int j = 0; j < arrDays_[index].elementsCount; ++j) {
-    //create new element object
+    // create new element object
     ElementTemplate *elem = new ElementTemplate;
 
     connect(server.get(), &Network::ServerConnection::initTEidOnServer, elem, &ElementTemplate::setId);
@@ -129,7 +127,7 @@ void MainWindow::addNewElementToLayout(const int index, const int newElementInde
     arrDays_[index].layoutDayElements->addWidget(elem, Qt::AlignCenter);
 
     if (j == newElementIndex) {
-      const int a = 150 * newElementIndex; //150 is lucky coefficient
+      const int a = 150 * newElementIndex; // 150 is lucky coefficient
       arrDays_[index].scrollArea->ensureVisible(0, a);
     }
   }

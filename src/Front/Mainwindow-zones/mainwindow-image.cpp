@@ -10,7 +10,8 @@ bool MainWindow::openImageFromDisk(const QString &imageName) {
 
     if (valid) {
       QJsonObject json;
-      json.insert("linkToImage", imageName);
+      json.insert(QStringLiteral("linkToImage"), imageName);
+
       json.insert("date", QDateTime(arrDays_[0].date).toMSecsSinceEpoch());
 
       QUrl url = QUrl(Network::serverUrl + Network::addImageUrl);
@@ -43,7 +44,7 @@ void MainWindow::setImage(const QString &imageName) {
 void MainWindow::on_buttonImage_clicked() {
   setImageBackgroundView(true);
 
-  QString newImageName = QFileDialog::getOpenFileName(this, tr("Chose your image"), "",
+  QString newImageName = QFileDialog::getOpenFileName(this, tr("Chose your image"), QLatin1String(""),
                                                       tr("Images(*.png *.jpg *.jpeg *.bmp *.gif)"));
 
   if (openImageFromDisk(newImageName)) {
@@ -55,9 +56,9 @@ void MainWindow::on_buttonImage_clicked() {
 }
 
 void MainWindow::setImageBackgroundView(bool status) {
-  QString stylesheet = "background-color: #e6f6ff; border-radius: 6px;"; //default
+  QString stylesheet = QStringLiteral("background-color: #e6f6ff; border-radius: 6px;"); // default
   if (status == true) {
-    stylesheet = "background-color: #abdfff; border-radius: 6px;";
+    stylesheet = QStringLiteral("background-color: #abdfff; border-radius: 6px;");
   }
   ui->buttonImage->setStyleSheet(stylesheet);
   ui->labelImageBackground->setStyleSheet(stylesheet);

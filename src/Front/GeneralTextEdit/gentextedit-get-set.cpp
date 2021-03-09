@@ -1,11 +1,11 @@
 #include "gentextedit.h"
 
-void GenTextEdit::recieveUsername(const QString username) { //SLOT
+void GenTextEdit::recieveUsername(const QString &username) { // SLOT
   username_ = username;
 }
 
-int GenTextEdit::getNumberCurrentFile() {
-    return nCurrentFile_;
+int GenTextEdit::getNumberCurrentFile() const {
+  return nCurrentFile_;
 }
 
 void GenTextEdit::clearCharStyleVector() {
@@ -13,7 +13,7 @@ void GenTextEdit::clearCharStyleVector() {
   charCounter_ = 0;
 }
 
-QVector<charStyle_t> GenTextEdit::getCharStyleVector() {
+const QVector<charStyle_t> &GenTextEdit::getCharStyleVector() const {
   return charStyleVector_;
 }
 void GenTextEdit::setNumberCurrentFile(const int n) {
@@ -22,11 +22,11 @@ void GenTextEdit::setNumberCurrentFile(const int n) {
   }
 }
 
-void GenTextEdit::fillCharStyleVector(int cursorPos, int count, charStyle_t ch) {
+void GenTextEdit::fillCharStyleVector(int cursorPos, int count, const charStyle_t &ch) {
   charStyleVector_.insert(cursorPos, count, ch);
 }
 
-void GenTextEdit::fillCharsAndSetText(QString text, const QJsonArray jArr) {
+void GenTextEdit::fillCharsAndSetText(QString text, const QJsonArray &jArr) {
   this->clearCharStyleVector();
   this->setCharCounter(jArr.size());
 
@@ -41,13 +41,13 @@ void GenTextEdit::fillCharsAndSetText(QString text, const QJsonArray jArr) {
 
     QJsonObject jChar = jArr[i].toObject();
 
-    bool boldStatus = jChar.value("bold").toBool();
-    bool italicStatus = jChar.value("italic").toBool();
-    bool underlineStatus = jChar.value("underline").toBool();
-    bool strikeStatus = jChar.value("strike").toBool();
-    bool itemStatus = jChar.value("item").toBool();
-    bool starStatus = jChar.value("star").toBool();
-    QString color = jChar.value("sColor").toString();
+    bool boldStatus = jChar.value(QStringLiteral("bold")).toBool();
+    bool italicStatus = jChar.value(QStringLiteral("italic")).toBool();
+    bool underlineStatus = jChar.value(QStringLiteral("underline")).toBool();
+    bool strikeStatus = jChar.value(QStringLiteral("strike")).toBool();
+    bool itemStatus = jChar.value(QStringLiteral("item")).toBool();
+    bool starStatus = jChar.value(QStringLiteral("star")).toBool();
+    QString color = jChar.value(QStringLiteral("sColor")).toString();
 
     if (boldStatus == true) {
       detailsSetCharStyle(ch, charStyle::Bold);
@@ -82,7 +82,7 @@ void GenTextEdit::fillCharsAndSetText(QString text, const QJsonArray jArr) {
   }
 }
 
-void GenTextEdit::fillCharsAndSetTextt(QString & text, QVector<charStyle_t> & styles) {
+void GenTextEdit::fillCharsAndSetTextt(QString &text, QVector<charStyle_t> &styles) {
   this->clearCharStyleVector();
   this->setCharCounter(styles.size());
 
@@ -127,7 +127,7 @@ void GenTextEdit::fillCharsAndSetTextt(QString & text, QVector<charStyle_t> & st
       detailsSetCharStyle(ch, charStyle::Star);
       charFormat.setFontWeight(QFont::Normal);
     }
-    if (color != "") {
+    if (color != QLatin1String("")) {
       charFormat.setBackground(QColor(color));
     }
     ch.sColor = color;
@@ -139,18 +139,18 @@ void GenTextEdit::fillCharsAndSetTextt(QString & text, QVector<charStyle_t> & st
   }
 }
 
-void GenTextEdit::setStylesToChar(charStyle_t& ch, QTextCharFormat& charFormat, const QJsonObject jChar) {
+void GenTextEdit::setStylesToChar(charStyle_t &ch, QTextCharFormat &charFormat, const QJsonObject &jChar) {
   GenTextEdit::detailsSetCharStyle(ch);
   charFormat.setFontWeight(QFont::Normal);
 
-  bool boldStatus = jChar.value("bold").toBool();
-  bool italicStatus = jChar.value("italic").toBool();
-  bool underlineStatus = jChar.value("underline").toBool();
-  bool strikeStatus = jChar.value("strike").toBool();
-  bool itemStatus = jChar.value("item").toBool();
-  bool starStatus = jChar.value("star").toBool();
-  QString color = jChar.value("sColor").toString();
-  bool spellChecker = jChar.value("spellChecker").toBool();
+  bool boldStatus = jChar.value(QStringLiteral("bold")).toBool();
+  bool italicStatus = jChar.value(QStringLiteral("italic")).toBool();
+  bool underlineStatus = jChar.value(QStringLiteral("underline")).toBool();
+  bool strikeStatus = jChar.value(QStringLiteral("strike")).toBool();
+  bool itemStatus = jChar.value(QStringLiteral("item")).toBool();
+  bool starStatus = jChar.value(QStringLiteral("star")).toBool();
+  QString color = jChar.value(QStringLiteral("sColor")).toString();
+  bool spellChecker = jChar.value(QStringLiteral("spellChecker")).toBool();
 
   if (boldStatus == true) {
     GenTextEdit::detailsSetCharStyle(ch, charStyle::Bold);
@@ -180,15 +180,14 @@ void GenTextEdit::setStylesToChar(charStyle_t& ch, QTextCharFormat& charFormat, 
     GenTextEdit::detailsSetCharStyle(ch, charStyle::SpellChecker);
   }
   ch.sColor = color;
-  if (color != "") {
+  if (color != QLatin1String("")) {
     charFormat.setBackground(QColor(color));
-  }
-  else {
+  } else {
     charFormat.setBackground(Qt::NoBrush);
   }
 }
 
-void GenTextEdit::getCharStyle(const int index, charStyle_t& ch) const {
+void GenTextEdit::getCharStyle(const int index, charStyle_t &ch) const {
   if (index < 0 || index >= charCounter_) {
     qDebug() << "Index is out of range!";
     return;

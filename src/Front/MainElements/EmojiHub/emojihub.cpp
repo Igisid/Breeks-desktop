@@ -16,7 +16,7 @@ EmojiHub::EmojiHub(QWidget *parent) : QGroupBox(parent)
   effect->setColor("#909090");
 
   this->setGraphicsEffect(effect);
-  this->setStyleSheet("background: none; border-radius: 10px; border: 0.4px solid #FFFFFF;");
+  this->setStyleSheet(QStringLiteral("background: none; border-radius: 10px; border: 0.4px solid #FFFFFF;"));
 
   QLayout *layout = new QVBoxLayout;
   this->setLayout(layout);
@@ -27,7 +27,7 @@ EmojiHub::EmojiHub(QWidget *parent) : QGroupBox(parent)
   QWidget *widget = new QWidget;
   QGridLayout *layout2 = new QGridLayout;
 
-  scrollArea_->setStyleSheet("background:#FFFFFF; border-radius: 8px;");
+  scrollArea_->setStyleSheet(QStringLiteral("background:#FFFFFF; border-radius: 8px;"));
   //scrollArea->setFixedHeight(80);
   scrollArea_->verticalScrollBar()->setStyleSheet(
     "QScrollBar:vertical {"
@@ -74,8 +74,8 @@ EmojiHub::EmojiHub(QWidget *parent) : QGroupBox(parent)
 void EmojiHub::keyPressEvent(QKeyEvent *event) {
   int iKey = event->key();
 
-  if (iKey == Qt::Key_F || QKeySequence(iKey).toString() == "А") {
-    this->setStyleSheet("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;");
+  if (iKey == Qt::Key_F || QKeySequence(iKey).toString() == QStringLiteral("А")) {
+    this->setStyleSheet(QStringLiteral("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
     scrollArea_->hide();
 
     if (isSaturday_) {
@@ -106,12 +106,12 @@ void EmojiHub::showThis() {
   }
 
   if (scrollArea_->isHidden()) {
-    this->setStyleSheet("background: #FFFFFF; border-radius: 9px; border: 0.4px solid #FFFFFF;");
+    this->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
     scrollArea_->show();
     open();
   }
   else {
-    this->setStyleSheet("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;");
+    this->setStyleSheet(QStringLiteral("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
     scrollArea_->hide();
     close();
   }
@@ -120,19 +120,19 @@ void EmojiHub::showThis() {
 void EmojiHub::showThisSt() {
   if (isSaturday_) {
     if (!scrollArea_->isHidden()) {
-      this->setStyleSheet("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;");
+      this->setStyleSheet(QStringLiteral("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
       scrollArea_->hide();
     }
     isSaturday_ = false;
     closeSt();
   } else {
     if (!scrollArea_->isHidden()) {
-      this->setStyleSheet("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;");
+      this->setStyleSheet(QStringLiteral("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
       scrollArea_->hide();
       close();
     }
     else {
-      this->setStyleSheet("background: #FFFFFF; border-radius: 9px; border: 0.4px solid #FFFFFF;");
+      this->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
       scrollArea_->show();
       openSt();
       isSaturday_ = true;

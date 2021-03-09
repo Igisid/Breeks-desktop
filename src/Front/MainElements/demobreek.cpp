@@ -23,7 +23,7 @@ void DemoBreek::keyPressEvent(QKeyEvent *event)
   int iKey = event->key();
 
   if (event->modifiers() == 0 && !isAnimated_) {
-    if (iKey == Qt::Key_W || QKeySequence(iKey).toString() == "Ц") {
+    if (iKey == Qt::Key_W || QKeySequence(iKey).toString() == QStringLiteral("Ц")) {
       isAnimated_ = true;
 
       if (workState_ == Conditions::RED) {
@@ -46,7 +46,7 @@ void DemoBreek::keyPressEvent(QKeyEvent *event)
       QFuture<void> future = QtConcurrent::run(this, &DemoBreek::waitAnimationEnd);
     }
 
-    if (iKey == Qt::Key_S || QKeySequence(iKey).toString() == "Ы") {
+    if (iKey == Qt::Key_S || QKeySequence(iKey).toString() == QStringLiteral("Ы")) {
       isAnimated_ = true;
 
       if (workState_ == Conditions::RED) {
@@ -88,7 +88,7 @@ void DemoBreek::connectToQml(int indexOfEmoji, Conditions cond) {
 
   // код, связывающий кнопку с qml
   if (quickWidget_ == nullptr) {
-    quickWidget_ = new QQuickWidget(QUrl("qrc:/qml/Front/Qml/qml_for_breeks.qml"), this);
+    quickWidget_ = new QQuickWidget(QUrl(QStringLiteral("qrc:/qml/Front/Qml/qml_for_breeks.qml")), this);
     quickWidget_->setResizeMode(QQuickWidget::SizeRootObjectToView);
     quickWidget_->setFixedSize(1.125 *width_, 1.125 * height_);
     graphObject_ = quickWidget_->rootObject();
@@ -105,7 +105,7 @@ void DemoBreek::connectToQml(int indexOfEmoji, Conditions cond) {
 
   // работа с фоном сцены
   QColor color;
-  color.setNamedColor("#e8f7cd");
+  color.setNamedColor(QStringLiteral("#e8f7cd"));
   quickWidget_->quickWindow()->setColor(color);
 
 //  QWidget *container = QWidget::createWindowContainer(&quickWidget_, this);
@@ -113,7 +113,7 @@ void DemoBreek::connectToQml(int indexOfEmoji, Conditions cond) {
 }
 
 void DemoBreek::connectToQml(Conditions cond, bool isShadow) {
-  QQmlProperty(graphObject_, "animationOn").write(false);
+  QQmlProperty(graphObject_, QStringLiteral("animationOn")).write(false);
 
   if (!isShadow && cond != Conditions::SHADOW) {
     graphObject_->setProperty("indexOfCondFrom", cond);
@@ -133,7 +133,7 @@ void DemoBreek::connectToQml(Conditions cond, bool isShadow) {
 
   // работа с фоном сцены
   QColor color;
-  color.setNamedColor("#e8f7cd");
+  color.setNamedColor(QStringLiteral("#e8f7cd"));
   quickWidget_->quickWindow()->setColor(color);
 }
 
@@ -143,18 +143,18 @@ void DemoBreek::connectToQml(int indexOfEmoji, Directions dir,
 
   // код, связывающий кнопку с qml
   if (quickWidget_ == nullptr) {
-    quickWidget_ = new QQuickWidget(QUrl("qrc:/qml/Front/Qml/qml_for_breeks.qml"), this);
+    quickWidget_ = new QQuickWidget(QUrl(QStringLiteral("qrc:/qml/Front/Qml/qml_for_breeks.qml")), this);
     quickWidget_->setResizeMode(QQuickWidget::SizeRootObjectToView);
     quickWidget_->setFixedSize(1.125*width_, 1.125*height_);
     graphObject_ = quickWidget_->rootObject();
   }
 
   graphObject_->setProperty("indexOfEmoji", indexOfEmoji);
-  QQmlProperty(graphObject_, "direction").write(dir);
+  QQmlProperty(graphObject_, QStringLiteral("direction")).write(dir);
   graphObject_->setProperty("indexOfCondFrom", from);
   graphObject_->setProperty("indexOfCondTo", to);
-  QQmlProperty(graphObject_, "animationOn").write(false);
-  QQmlProperty(graphObject_, "animationOn").write(true);
+  QQmlProperty(graphObject_, QStringLiteral("animationOn")).write(false);
+  QQmlProperty(graphObject_, QStringLiteral("animationOn")).write(true);
   graphObject_->setProperty("size1", width_);
   graphObject_->setProperty("size2", height_);
 

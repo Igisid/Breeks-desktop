@@ -210,7 +210,7 @@ void Breek::connectToQml(int indexOfEmoji, Conditions cond) {
 
   // работа с фоном сцены
   QColor color;
-  color.setNamedColor("#F7F7F7");
+  color.setNamedColor(QStringLiteral("#F7F7F7"));
   quickWidget_->quickWindow()->setColor(color);
 
 //  QWidget *container = QWidget::createWindowContainer(&quickWidget_, this);
@@ -218,7 +218,7 @@ void Breek::connectToQml(int indexOfEmoji, Conditions cond) {
 }
 
 void Breek::connectToQml(Conditions cond, bool isShadow) {
-  QQmlProperty(graphObject_, "animationOn").write(false);
+  QQmlProperty(graphObject_, QStringLiteral("animationOn")).write(false);
 
   if (!isShadow && cond != Conditions::SHADOW) {
     graphObject_->setProperty("indexOfCondFrom", cond);
@@ -238,7 +238,7 @@ void Breek::connectToQml(Conditions cond, bool isShadow) {
 
   // работа с фоном сцены
   QColor color;
-  color.setNamedColor("#F7F7F7");
+  color.setNamedColor(QStringLiteral("#F7F7F7"));
   quickWidget_->quickWindow()->setColor(color);
 }
 
@@ -248,18 +248,18 @@ void Breek::connectToQml(int indexOfEmoji, Directions dir,
 
   // код, связывающий кнопку с qml
   if (quickWidget_ == nullptr) {
-    quickWidget_ = new QQuickWidget(QUrl("qrc:/qml/Front/Qml/qml_for_breeks.qml"), this);
+    quickWidget_ = new QQuickWidget(QUrl(QStringLiteral("qrc:/qml/Front/Qml/qml_for_breeks.qml")), this);
     quickWidget_->setResizeMode(QQuickWidget::SizeRootObjectToView);
     quickWidget_->setFixedSize(1.125*width_, 1.125*height_);
     graphObject_ = quickWidget_->rootObject();
   }
 
   graphObject_->setProperty("indexOfEmoji", indexOfEmoji);
-  QQmlProperty(graphObject_, "direction").write(dir);
+  QQmlProperty(graphObject_, QStringLiteral("direction")).write(dir);
   graphObject_->setProperty("indexOfCondFrom", from);
   graphObject_->setProperty("indexOfCondTo", to);
-  QQmlProperty(graphObject_, "animationOn").write(false);
-  QQmlProperty(graphObject_, "animationOn").write(true);
+  QQmlProperty(graphObject_, QStringLiteral("animationOn")).write(false);
+  QQmlProperty(graphObject_, QStringLiteral("animationOn")).write(true);
   graphObject_->setProperty("size1", 80);
   graphObject_->setProperty("size2", 80);
   // работа с фоном сцены

@@ -24,7 +24,7 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
 
     breeksZone->arrBreeksZoneDays[i]->setFixedSize(90, 90);
     breeksZone->arrBreeks[i]->setFixedSize(90, 90);
-    breeksZone->arrBreeks[i]->setStyleSheet("background: none;");
+    breeksZone->arrBreeks[i]->setStyleSheet(QStringLiteral("background: none;"));
 
     /// @bug This is not a normalized connection
     connect(breeksZone->arrBreeks[i], SIGNAL(sendSateToLilDay(int, int, int)), this,
@@ -102,8 +102,8 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
 
   breeksZone->breekText->setFixedSize(240, 60);
   breeksZone->breekText->setStyleSheet("background: #FFFFFF; border: 0.2px solid #EEEEEE; border-radius: 4px;"
-                                                                                                                                                 "padding-left: 2; padding-top: 2; padding-bottom: 2; padding-right: 2;");
-  QFont font("Helvetica", 12);
+                                       "padding-left: 2; padding-top: 2; padding-bottom: 2; padding-right: 2;");
+  QFont font(QStringLiteral("Helvetica"), 12);
   breeksZone->breekText->setFont(font);
 
   breeksZone->breekText->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
@@ -140,30 +140,31 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
   //breeksZone->buttonBreekDays->setStyleSheet("background: none;");
 
   breeksZone->breeksDescriptionLayout->addWidget(breeksZone->buttonDelete, 0, 1);
-  breeksZone->buttonDelete->setStyleSheet("background: none; border-image:url(:/Images/Front/Images/trash.png)");
+  breeksZone->buttonDelete->setStyleSheet(
+      QStringLiteral("background: none; border-image:url(:/Images/Front/Images/trash.png)"));
 
   QHBoxLayout *days = new QHBoxLayout;
   days->setContentsMargins(0, 0, 28, 0);
 
   for (int i = 0; i < DAYS_COUNT; ++i) {
     breeksZone->arrBreeksZoneDays[i]->setFixedSize(25, 20);
-    breeksZone->arrBreeksZoneDays[i]->setStyleSheet("background: #FFFFFF; border-radius: 4px;");
+    breeksZone->arrBreeksZoneDays[i]->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 4px;"));
     days->addWidget(breeksZone->arrBreeksZoneDays[i], Qt::AlignCenter);
   }
-  breeksZone->arrBreeksZoneDays[0]->setText("Пн");
-  breeksZone->arrBreeksZoneDays[1]->setText("Вт");
-  breeksZone->arrBreeksZoneDays[2]->setText("Ср");
-  breeksZone->arrBreeksZoneDays[3]->setText("Чт");
-  breeksZone->arrBreeksZoneDays[4]->setText("Пт");
-  breeksZone->arrBreeksZoneDays[5]->setText("Сб");
+  breeksZone->arrBreeksZoneDays[0]->setText(QStringLiteral("Пн"));
+  breeksZone->arrBreeksZoneDays[1]->setText(QStringLiteral("Вт"));
+  breeksZone->arrBreeksZoneDays[2]->setText(QStringLiteral("Ср"));
+  breeksZone->arrBreeksZoneDays[3]->setText(QStringLiteral("Чт"));
+  breeksZone->arrBreeksZoneDays[4]->setText(QStringLiteral("Пт"));
+  breeksZone->arrBreeksZoneDays[5]->setText(QStringLiteral("Сб"));
 
   //
   QPushButton *helper = new QPushButton;
   helper->setFixedSize(15, 20);
   helper->setEnabled(false);
   helper->setFlat(true);
-  helper->setStyleSheet("background: none;");
-  //days->addWidget(helper);
+  helper->setStyleSheet(QStringLiteral("background: none;"));
+  // days->addWidget(helper);
   //
 
   QVBoxLayout *mainLayout = new QVBoxLayout;
@@ -177,17 +178,17 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
 
   for (int i = 0; i < 4; ++i) {
     switch (i) {
-      case 0 :
-        arrEmojiNormal[0] = "";
-        break;
-      case 1 :
-        arrEmojiCompleted[0] = "";
-        break;
-      case 2 :
-        arrEmojiDroped[0] = "";
-        break;
-      case 3 :
-        arrEmojiProcess[0] = "";
+    case 0:
+      arrEmojiNormal[0] = QLatin1String("");
+      break;
+    case 1:
+      arrEmojiCompleted[0] = QLatin1String("");
+      break;
+    case 2:
+      arrEmojiDroped[0] = QLatin1String("");
+      break;
+    case 3:
+      arrEmojiProcess[0] = QLatin1String("");
     }
   }
 
@@ -220,7 +221,7 @@ void MainWindow::buildBreeksDescriptionZone() {
   effect->setYOffset(1);
   effect->setColor("#909090");
   ui->groupBoxBreeksDescreption->setGraphicsEffect(effect);
-  ui->groupBoxBreeksDescreption->setStyleSheet("QGroupBox{background: #FFFFFF; border-radius: 6px;}");
+  ui->groupBoxBreeksDescreption->setStyleSheet(QStringLiteral("QGroupBox{background: #FFFFFF; border-radius: 6px;}"));
 
   QHBoxLayout *layOut = new QHBoxLayout;
   ui->groupBoxBreeksDescreption->setLayout(layOut);
@@ -230,10 +231,10 @@ void MainWindow::buildBreeksDescriptionZone() {
 
   bigWidgetInBreeksDescriptionZone_->setFixedSize(ui->groupBoxBreeksDescreption->width() - 30, bigWidgetHeight_);
   bigWidgetInBreeksDescriptionZone_->setContentsMargins(7, 0, 0, 0);
-  bigWidgetInBreeksDescriptionZone_->setStyleSheet("QWidget{background: #FFFFFF;}");
+  bigWidgetInBreeksDescriptionZone_->setStyleSheet(QStringLiteral("QWidget{background: #FFFFFF;}"));
 
   breeksDescriptionZoneScrollArea_->setWidget(bigWidgetInBreeksDescriptionZone_);
-  breeksDescriptionZoneScrollArea_->setStyleSheet("background: #FFFFFF; border-radius: 9px;");
+  breeksDescriptionZoneScrollArea_->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 9px;"));
 
   //breeksDescriptionZoneLayout_->setContentsMargins(0, 0, 0, 200);
   bigWidgetInBreeksDescriptionZone_->setLayout(breeksDescriptionZoneLayout_);
@@ -248,7 +249,7 @@ void MainWindow::buildBreeksDescriptionZone() {
 
   calendarScrollArea = new QScrollArea;
   calendarScrollArea->setFixedSize(descriptionWidth, descriptionHeight);
-  calendarScrollArea->setStyleSheet("QScrollArea{background: #FFFFFF}");
+  calendarScrollArea->setStyleSheet(QStringLiteral("QScrollArea{background: #FFFFFF}"));
   calendarScrollArea->setWidgetResizable(true);
 
   calendarScrollArea->setWidget(calendarWidget);
@@ -262,7 +263,7 @@ void MainWindow::buildBreeksDescriptionZone() {
   lay2->setContentsMargins(30, 10, 0, 10);
 
   QDateTime date = QDateTime::currentDateTime();
-  QString prevMonth = "";
+  QString prevMonth = QLatin1String("");
 
   for (int i = 0; i < 53; ++i) { //53 - counts of week in 2021
     calendarWidget->setFixedHeight(40 * (i + 1));
@@ -295,47 +296,47 @@ void MainWindow::buildBreeksDescriptionZone() {
 
     QString monthName;
     switch (week->date->date().month()) {
-      case (1) :
-        monthName = "января";
-        break;
-      case (2) :
-        monthName = "февраля";
-        break;
-      case (3) :
-        monthName = "марта";
-        break;
-      case (4) :
-        monthName = "апреля";
-        break;
-      case (5) :
-        monthName = "мая";
-        break;
-      case (6) :
-        monthName = "июня";
-        break;
-      case (7) :
-        monthName = "июля";
-        break;
-      case (8) :
-        monthName = "августа";
-        break;
-      case (9) :
-        monthName = "сентября";
-        break;
-      case (10) :
-        monthName = "октября";
-        break;
-      case (11) :
-        monthName = "ноября";
-        break;
-      case (12) :
-        monthName = "декабря";
-        break;
+    case (1):
+      monthName = QStringLiteral("января");
+      break;
+    case (2):
+      monthName = QStringLiteral("февраля");
+      break;
+    case (3):
+      monthName = QStringLiteral("марта");
+      break;
+    case (4):
+      monthName = QStringLiteral("апреля");
+      break;
+    case (5):
+      monthName = QStringLiteral("мая");
+      break;
+    case (6):
+      monthName = QStringLiteral("июня");
+      break;
+    case (7):
+      monthName = QStringLiteral("июля");
+      break;
+    case (8):
+      monthName = QStringLiteral("августа");
+      break;
+    case (9):
+      monthName = QStringLiteral("сентября");
+      break;
+    case (10):
+      monthName = QStringLiteral("октября");
+      break;
+    case (11):
+      monthName = QStringLiteral("ноября");
+      break;
+    case (12):
+      monthName = QStringLiteral("декабря");
+      break;
     }
 
     week->setContentsMargins(10, 0, 0, 0);
 
-    QString sDates = "";
+    QString sDates = QLatin1String("");
     int day = week->date->date().day();
 
     if (day < 10) {
@@ -442,17 +443,20 @@ void MainWindow::changeBreeksZoneLilDayState(int zoneIndex, int dayIndex, int iS
   shadow->setColor("#81C4FF");
 
   switch (iState) {
-    case 0 :
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(shadow);
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet("background: #FFFFFF; border-radius: 4px;");
-      break;
-    case 1 :
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(nullptr);
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet("background: #d0f896; border-radius: 4px;");
-      break;
-    case 2 :
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(nullptr);
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet("background: #ff8696; border-radius: 4px;");
+  case 0:
+    arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(shadow);
+    arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet(
+        QStringLiteral("background: #FFFFFF; border-radius: 4px;"));
+    break;
+  case 1:
+    arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(nullptr);
+    arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet(
+        QStringLiteral("background: #d0f896; border-radius: 4px;"));
+    break;
+  case 2:
+    arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(nullptr);
+    arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet(
+        QStringLiteral("background: #ff8696; border-radius: 4px;"));
   }
 
   if (withRequest) {
@@ -467,18 +471,20 @@ void MainWindow::setBreeksZoneLilDayShadow(int zoneIndex, int dayIndex, bool sta
   shadow->setYOffset(0);
   shadow->setColor("#81C4FF");
 
-  arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet("background: #FFFFFF; border-radius: 4px;");
+  arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet(
+      QStringLiteral("background: #FFFFFF; border-radius: 4px;"));
 
   if (state) {
     arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(shadow);
     if (dayIndex == iCurrentDay_) {
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet("background: #b3defc; border-radius: 4px;");
+      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet(
+          QStringLiteral("background: #b3defc; border-radius: 4px;"));
     }
-  }
-  else {
+  } else {
     arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setGraphicsEffect(nullptr);
     if (dayIndex == iCurrentDay_) {
-      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet("background: #FFFFFF; border-radius: 4px;");
+      arrBreeksZones_[zoneIndex].arrBreeksZoneDays[dayIndex]->setStyleSheet(
+          QStringLiteral("background: #FFFFFF; border-radius: 4px;"));
     }
   }
 }
@@ -694,13 +700,12 @@ void MainWindow::moveBreek(int zoneIndex, int dayIndex, bool right) {
 
   if (dayIndex == iCurrentDay_) {
     arrBreeksZones_[zoneIndex].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(
-      "background: #FFFFFF; border-radius: 4px;"
+        QStringLiteral("background: #FFFFFF; border-radius: 4px;"));
     );
   }
   if (iCurrentDay_ < DAYS_COUNT & arrBreeksZones_[zoneIndex].arrBreeks[iCurrentDay_]->getState()) {
     arrBreeksZones_[zoneIndex].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(
-      "background: #b3defc; border-radius: 4px;"
-    );
+        QStringLiteral("background: #b3defc; border-radius: 4px;"));
   }
 
   sendPutRequestBl(zoneIndex);
@@ -710,50 +715,51 @@ void MainWindow::sendPutRequestBl(int zoneIndex) {
   breeksZone_t newElement = arrBreeksZones_[zoneIndex];
 
   QJsonObject json;
-  json.insert("description", newElement.breekText->toPlainText());
+  json.insert(QStringLiteral("description"), newElement.breekText->toPlainText());
 
   QJsonArray jArr;
   foreach(charStyle_t ch, newElement.breekText->getCharStyleVector()) {
     QJsonObject jChar;
-    jChar.insert("bold", ch.bold);
-    jChar.insert("italic", ch.italic);
-    jChar.insert("underline", ch.underline);
-    jChar.insert("strike", ch.strike);
-    jChar.insert("item", ch.item);
-    jChar.insert("star", ch.star);
-    jChar.insert("sColor", ch.sColor);
-    jChar.insert("spellChecker", ch.spellChecker);
+    jChar.insert(QStringLiteral("bold"), ch.bold);
+    jChar.insert(QStringLiteral("italic"), ch.italic);
+    jChar.insert(QStringLiteral("underline"), ch.underline);
+    jChar.insert(QStringLiteral("strike"), ch.strike);
+    jChar.insert(QStringLiteral("item"), ch.item);
+    jChar.insert(QStringLiteral("star"), ch.star);
+    jChar.insert(QStringLiteral("sColor"), ch.sColor);
+    jChar.insert(QStringLiteral("spellChecker"), ch.spellChecker);
     jArr.push_back(jChar);
   }
   QJsonDocument jDoc;
   jDoc.setArray(jArr);
-  json.insert("effects", QString(jDoc.toJson()));
+  json.insert(QStringLiteral("effects"), QString(jDoc.toJson()));
 
-  QString sConditions = "";
+  QString sConditions = QLatin1String("");
   for (int i = 0; i < DAYS_COUNT; ++i) {
     sConditions += QString::number(newElement.arrBreeks[i]->getState());
   }
   bool isCovert;
-  json.insert("conditions", sConditions.toShort(&isCovert, 2));
+  json.insert(QStringLiteral("conditions"), sConditions.toShort(&isCovert, 2));
 
-  QString sStates = "";
+  QString sStates = QLatin1String("");
   for (int i = 0; i < DAYS_COUNT; ++i) {
     sStates += QString::number(newElement.arrBreeks[i]->getColorState());
   }
-  json.insert("states", sStates.toShort(&isCovert, 4));
+  json.insert(QStringLiteral("states"), sStates.toShort(&isCovert, 4));
 
   QJsonArray jArrEmojies;
   for (int i = 0; i < DAYS_COUNT; ++i) {
     QJsonObject jObj;
-    jObj.insert("emojiNum", newElement.arrBreeks[i]->getEmojiNum());
+    jObj.insert(QStringLiteral("emojiNum"), newElement.arrBreeks[i]->getEmojiNum());
     jArrEmojies.push_back(jObj);
   }
-  json.insert("emojies", jArrEmojies);
+  json.insert(QStringLiteral("emojies"), jArrEmojies);
 
-  json.insert("date", QDateTime(arrDays_[0].date).toMSecsSinceEpoch()); //first day of week
+  QDateTime dt;
+  dt.setDate(arrDays_[0].date);
+  json.insert(QStringLiteral("date"), dt.toMSecsSinceEpoch()); // first day of week
 
-  QUrl url = QUrl(Network::serverUrl + Network::editBreeksLineUrl + "/" +
-                  QString::number(newElement.idOnServer));
+  QUrl url = QUrl(Network::serverUrl + Network::editBreeksLineUrl + "/" + QString::number(newElement.idOnServer));
   QJsonDocument jsonDoc(json);
   server->sendPutRequestWithBearerToken(url , jsonDoc.toJson(), userData->getAccessToken());
 }

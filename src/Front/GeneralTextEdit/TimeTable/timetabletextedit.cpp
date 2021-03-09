@@ -2,56 +2,52 @@
 
 #include <QScrollBar>
 
-TimetableTextEdit::TimetableTextEdit(QWidget *parent)
-        :GenTextEdit(parent)
-{
+TimetableTextEdit::TimetableTextEdit(QWidget *parent) : GenTextEdit(parent) {
   this->clearCharStyleVector();
   this->clear();
   this->setCharCounter(0);
 
-  this->verticalScrollBar()->setStyleSheet(
-    "QScrollBar:vertical {"
-        "background-color: #FFFFF0;"
-        "width: 7px;"
-        "margin: 0px 0px 0px 0px;"
-        "border: 0.1px solid #FFFFFF;}"
+  this->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                           "background-color: #FFFFF0;"
+                                           "width: 7px;"
+                                           "margin: 0px 0px 0px 0px;"
+                                           "border: 0.1px solid #FFFFFF;}"
 
-    "QScrollBar::handle:vartical {"
-        "border-radius: 3px;"
-        "background: #e3e3df;"
-        "min-height: 30px;}"
+                                           "QScrollBar::handle:vartical {"
+                                           "border-radius: 3px;"
+                                           "background: #e3e3df;"
+                                           "min-height: 30px;}"
 
-    "QScrollBar::handle:vertical:hover {"
-        "border-radius: 3px;"
-        "background: #c7c7bf;"
-        "min-height: 30px;}"
+                                           "QScrollBar::handle:vertical:hover {"
+                                           "border-radius: 3px;"
+                                           "background: #c7c7bf;"
+                                           "min-height: 30px;}"
 
-    "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                           "QScrollBar::add-line:vertical {"
+                                           "border: none;"
+                                           "background: none;}"
 
-    "QScrollBar::sub-line:vertical {"
-        "border: none;"
-        "background: none;}"
-  );
+                                           "QScrollBar::sub-line:vertical {"
+                                           "border: none;"
+                                           "background: none;}");
 }
 
-void TimetableTextEdit::fillCharsAndSetText(QString text, const QVector<charStyle_t>& arr) {
+void TimetableTextEdit::fillCharsAndSetText(QString text, const QVector<charStyle_t> &arr) {
   this->clearCharStyleVector();
   this->setCharCounter(arr.size());
 
   QJsonArray jArr;
 
-  for (charStyle_t ch: arr) {
+  for (const charStyle_t &ch : arr) {
     QJsonObject jChar;
-    jChar.insert("bold", ch.bold);
-    jChar.insert("italic", ch.italic);
-    jChar.insert("underline", ch.underline);
-    jChar.insert("strike", ch.strike);
-    jChar.insert("item", ch.item);
-    jChar.insert("star", ch.star);
-    jChar.insert("sColor", ch.sColor);
-    jChar.insert("spellChecker", ch.spellChecker);
+    jChar.insert(QStringLiteral("bold"), ch.bold);
+    jChar.insert(QStringLiteral("italic"), ch.italic);
+    jChar.insert(QStringLiteral("underline"), ch.underline);
+    jChar.insert(QStringLiteral("strike"), ch.strike);
+    jChar.insert(QStringLiteral("item"), ch.item);
+    jChar.insert(QStringLiteral("star"), ch.star);
+    jChar.insert(QStringLiteral("sColor"), ch.sColor);
+    jChar.insert(QStringLiteral("spellChecker"), ch.spellChecker);
     jArr.push_back(jChar);
   }
 
@@ -73,4 +69,3 @@ void TimetableTextEdit::fillCharsAndSetText(QString text, const QVector<charStyl
 void TimetableTextEdit::keyPressEvent(QKeyEvent *event) {
   GenTextEdit::keyPressEvent(event);
 }
-

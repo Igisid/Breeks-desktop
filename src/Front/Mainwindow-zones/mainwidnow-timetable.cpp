@@ -11,58 +11,56 @@ void MainWindow::buildTimeTable() {
   effect->setYOffset(1);
   effect->setColor("#909090");
 
-  ui->shadowWidget->setGraphicsEffect(effect); //fakeWidget
-  ui->shadowWidget->setStyleSheet("border-radius: 6px;");
+  ui->shadowWidget->setGraphicsEffect(effect); // fakeWidget
+  ui->shadowWidget->setStyleSheet(QStringLiteral("border-radius: 6px;"));
 
-  ui->groupBoxWorkZone->setStyleSheet("background: #FFFFFF; border-radius: 6px;");
+  ui->groupBoxWorkZone->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 6px;"));
 
   bigWidgetInWorkZone_->setFixedSize(WORK_ZONE_BIG_WIDGET_WIDTH, bigWidgetHeight_);
-  bigWidgetInWorkZone_->setStyleSheet("background: #FFFFFF; border-radius: 9px;");
+  bigWidgetInWorkZone_->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 9px;"));
 
   workZoneScrollArea_->setWidget(bigWidgetInWorkZone_);
   workZoneScrollArea_->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  workZoneScrollArea_->setStyleSheet("border-radius: 9px;");
+  workZoneScrollArea_->setStyleSheet(QStringLiteral("border-radius: 9px;"));
 
-  workZoneScrollArea_->horizontalScrollBar()->setStyleSheet(
-    "QScrollBar:horizontal {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "height: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+  workZoneScrollArea_->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal {"
+                                                            "border: 0.1px solid #FFFFFF;"
+                                                            "background: #FFFFFF;"
+                                                            "height: 9px;"
+                                                            "margin: 0px 0px 0px 0px;}"
 
-    "QScrollBar::handle:horizontal {"
-        //"border: 0.5px solid #c7c7bf;"
-        "border-radius: 4px;"
-        "background: #e3e3df;"
-        "min-height: 0px;}"
+                                                            "QScrollBar::handle:horizontal {"
+                                                            //"border: 0.5px solid #c7c7bf;"
+                                                            "border-radius: 4px;"
+                                                            "background: #e3e3df;"
+                                                            "min-height: 0px;}"
 
-        "QScrollBar:horizontal:hover {"
-                "border: 0.1px solid #FFFFFF;"
-                "background: #FFFFFF;"
-                "height: 15px;"
-                "margin: 0px 0px 0px 0px;}"
+                                                            "QScrollBar:horizontal:hover {"
+                                                            "border: 0.1px solid #FFFFFF;"
+                                                            "background: #FFFFFF;"
+                                                            "height: 15px;"
+                                                            "margin: 0px 0px 0px 0px;}"
 
-        "QScrollBar::handle:horizontal:hover {"
-                //"border: 0.5px solid #c7c7bf;"
-                "border-radius: 4px;"
-                "background: #c7c7bf;"
-                "min-height: 0px;}"
+                                                            "QScrollBar::handle:horizontal:hover {"
+                                                            //"border: 0.5px solid #c7c7bf;"
+                                                            "border-radius: 4px;"
+                                                            "background: #c7c7bf;"
+                                                            "min-height: 0px;}"
 
-    "QScrollBar::add-line:horizontal {"
-        "border: none;"
-        "background: none;}"
+                                                            "QScrollBar::add-line:horizontal {"
+                                                            "border: none;"
+                                                            "background: none;}"
 
-    "QScrollBar::sub-line:horizontal {"
-        "border: none;"
-        "background: none;}"
-  );
+                                                            "QScrollBar::sub-line:horizontal {"
+                                                            "border: none;"
+                                                            "background: none;}");
 
   bigWidgetInWorkZone_->setLayout(workZoneLayout_);
-  //workZoneLayout_->setContentsMargins(0, 0, 0, 200); //experience par
+  // workZoneLayout_->setContentsMargins(0, 0, 0, 200); //experience par
 
   allocateMemoryForDays();
 
-  //add groupboxes for days
+  // add groupboxes for days
   const int dayWidth = 305;
   const int dayHeight = 480;
   for (int i = 0; i < DAYS_COUNT; ++i) {
@@ -70,10 +68,10 @@ void MainWindow::buildTimeTable() {
     workZoneLayout_->addWidget(arrDays_[i].groupBoxDay, 0, i, Qt::AlignCenter);
   }
 
-  //build a day
+  // build a day
   setDaysStructure();
 
-  timer_ = new QTimer();
+  timer_ = std::make_unique<QTimer>();
   timer_->setSingleShot(true);
 
   /// @bug This is not a normalized connection
@@ -87,163 +85,153 @@ void MainWindow::buildTimeTable() {
 
 void MainWindow::setDayInfo(QDate date) {
   if (iCurrentDay_ < DAYS_COUNT) {
-    arrDays_[iCurrentDay_].scrollArea->verticalScrollBar()->setStyleSheet(
-      "QScrollBar:vertical {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "width: 9px;    "
-        "margin: 0px 0px 0px 0px;}"
+    arrDays_[iCurrentDay_].scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                                          "border: 0.1px solid #FFFFFF;"
+                                                                          "background: #FFFFFF;"
+                                                                          "width: 9px;    "
+                                                                          "margin: 0px 0px 0px 0px;}"
 
-      "QScrollBar::handle:vertical {"
-        "border: 0.5px solid #E3E3E3;"
-        "border-radius: 4px;"
-        "background: #FCFCFC;"
-        "min-height: 0px;}"
+                                                                          "QScrollBar::handle:vertical {"
+                                                                          "border: 0.5px solid #E3E3E3;"
+                                                                          "border-radius: 4px;"
+                                                                          "background: #FCFCFC;"
+                                                                          "min-height: 0px;}"
 
-      "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                                                          "QScrollBar::add-line:vertical {"
+                                                                          "border: none;"
+                                                                          "background: none;}"
 
-      "QScrollBar::sub-line:vartical {"
-        "border: none;"
-        "background: none;}"
-    );
+                                                                          "QScrollBar::sub-line:vartical {"
+                                                                          "border: none;"
+                                                                          "background: none;}");
   }
 
-  //for days in description zone
+  // for days in description zone
   for (int i = 0; i < breeksZonesCount_; ++i) {
-    arrBreeksZones_[i].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet("background: #FFFFFF; border-radius: 4px;");
+    arrBreeksZones_[i].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(
+        QStringLiteral("background: #FFFFFF; border-radius: 4px;"));
   }
 
-  //to auto-set current day in the center of screen
-  const int scrollPosTue = 700;
-  const int scrollPosWed = 1000;
-  const int scrollPosThu = 1300;
-  const int scrollPosFri = 1600;
-  const int scrollPosSat = bigWidgetInWorkZone_->width();
-  //const int scrollPosSun = workZoneScrollArea_->width();
+  // to auto-set current day in the center of screen
+  //  const int scrollPosTue = 700;
+  //  const int scrollPosWed = 1000;
+  //  const int scrollPosThu = 1300;
+  //  const int scrollPosFri = 1600;
+  //  const int scrollPosSat = bigWidgetInWorkZone_->width();
+  // const int scrollPosSun = workZoneScrollArea_->width();
 
-  //identify current day of week
+  // identify current day of week
 
   if (QDate::currentDate().daysTo(date) > -6 && QDate::currentDate().daysTo(date) <= 0) {
     iCurrentDay_ = QDate::currentDate().dayOfWeek() - 1;
     currentDate_ = QDate::currentDate();
-  }
-  else {
+  } else {
     iCurrentDay_ = date.dayOfWeek() - 1;
     currentDate_ = date;
   }
 
   for (int i = 0; i < breeksZonesCount_; ++i) {
-    arrBreeksZones_[i].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet("background: #b3defc; border-radius: 4px;");
+    arrBreeksZones_[i].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(
+        QStringLiteral("background: #b3defc; border-radius: 4px;"));
   }
 
   int dayPos = 0;
   switch (iCurrentDay_) {
-    case 0 :
-      dayPos = 0;
-      break;
-    case 1 :
-      dayPos = 0;
-      break;
-    case 2 :
-      dayPos = 350;
-      break;
-    case 3 :
-      dayPos = 680;
-      break;
-    case 4 :
-      dayPos = 1000;
-      break;
-    case 5 :
-      dayPos = 1000;
-      break;
+  case 0:
+    dayPos = 0;
+    break;
+  case 1:
+    dayPos = 0;
+    break;
+  case 2:
+    dayPos = 350;
+    break;
+  case 3:
+    dayPos = 680;
+    break;
+  case 4:
+    dayPos = 1000;
+    break;
+  case 5:
+    dayPos = 1000;
+    break;
   }
   workZoneScrollArea_->horizontalScrollBar()->setValue(dayPos);
 
-  //special data for set info about days in the LOOP BELOW: date, name of the day and font effects
-  const QString arrMonthsRu[12] = { "января", "февраля", "марта", "апреля", "мая",
-        "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря" };
-  const QString arrMonthsEng[12] = { "January", "February", "March", "April", "May",
-        "June", "July", "August", "September", "October", "November", "December" };
+  // special data for set info about days in the LOOP BELOW: date, name of the
+  // day and font effects
+  const QString arrMonthsRu[12] = {"января", "февраля", "марта",    "апреля",  "мая",    "июня",
+                                   "июля",   "августа", "сентября", "октября", "ноября", "декабря"};
+  const QString arrMonthsEng[12] = {"January", "February", "March",     "April",   "May",      "June",
+                                    "July",    "August",   "September", "October", "November", "December"};
 
-  const QString daysNamesRu[7] = {"Понедельник", "Вторник", "Среда",
-                                  "Четверг", "Пятница", "Суббота", "Воскресенье"};
-  const QString daysNamesEng[7] = {"Monday", "Tuesday", "Wednesday",
-                                   "Thursday", "Friday", "Saturday", "Sunday"};
+  const QString daysNamesRu[7] = {"Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"};
+  const QString daysNamesEng[7] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 
   QDate tmpDate = currentDate_;
 
-  QFont font("Helvetica", 12);
-  QFont fontCounter("Helvetica", 11);
+  QFont font(QStringLiteral("Helvetica"), 12);
+  QFont fontCounter(QStringLiteral("Helvetica"), 11);
 
   for (int i = 0; i < DAYS_COUNT; ++i) {
-    //identify month of day
+    // identify month of day
     tmpDate = currentDate_.addDays(i - iCurrentDay_);
-    QString nameMonth = tmpDate.toString("MMMM");
+    QString nameMonth = tmpDate.toString(QStringLiteral("MMMM"));
 
-    //set font for label with day info
+    // set font for label with day info
     arrDays_[i].labelDate->setFont(font);
     arrDays_[i].date = tmpDate;
 
-    //work with HTML to set style for a part of line
+    // work with HTML to set style for a part of line
     QString strHTML = "<b>" + daysNamesRu[i] + "</b>";
     QByteArray encoding = strHTML.toUtf8();
-    const char *charHTML= encoding.data();
+    const char *charHTML = encoding.data();
 
-    //set current date
-    QString sCurrentDate = "";
-    sCurrentDate = ", " + nameMonth + " " + tmpDate.toString("d");
+    // set current date
+    QString sCurrentDate = ", " + nameMonth + " " + tmpDate.toString(QStringLiteral("d"));
     if (i != iCurrentDay_) {
       arrDays_[i].labelDate->setText(tr(charHTML) + sCurrentDate);
-    }
-    else {
+    } else {
       if (currentDate_ == QDate::currentDate()) {
         arrDays_[i].labelDate->setText(QString(tr(charHTML)).toUpper() + sCurrentDate);
-      }
-      else {
+      } else {
         arrDays_[i].labelDate->setText(tr(charHTML) + sCurrentDate);
       }
     }
   }
   if (currentDate_ == QDate::currentDate()) {
     if (iCurrentDay_ < DAYS_COUNT) {
-      arrDays_[iCurrentDay_].scrollArea->verticalScrollBar()->setStyleSheet(
-        "QScrollBar:vertical {"
-                "border: 0.1px solid #FFFFFF;"
-                "background: #FFFFFF;"
-                "width: 9px;    "
-                "margin: 0px 0px 0px 0px;}"
+      arrDays_[iCurrentDay_].scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                                            "border: 0.1px solid #FFFFFF;"
+                                                                            "background: #FFFFFF;"
+                                                                            "width: 9px;    "
+                                                                            "margin: 0px 0px 0px 0px;}"
 
-        "QScrollBar::handle:vertical {"
-                "border: 0.5px solid #b3defc;"
-                "border-radius: 2px;"
-                "background: #b3defc;"
-                "min-height: 0px;}"
+                                                                            "QScrollBar::handle:vertical {"
+                                                                            "border: 0.5px solid #b3defc;"
+                                                                            "border-radius: 2px;"
+                                                                            "background: #b3defc;"
+                                                                            "min-height: 0px;}"
 
-        "QScrollBar::add-line:vertical {"
-                "border: none;"
-                "background: none;}"
+                                                                            "QScrollBar::add-line:vertical {"
+                                                                            "border: none;"
+                                                                            "background: none;}"
 
-        "QScrollBar::sub-line:vartical {"
-                "border: none;"
-                "background: none;}"
-      );
+                                                                            "QScrollBar::sub-line:vartical {"
+                                                                            "border: none;"
+                                                                            "background: none;}");
     }
-  }
-  else {
+  } else {
     iCurrentDay_ = DAYS_COUNT;
   }
 
-  //set font style for elements count label
+  // set font style for elements count label
   for (int i = 0; i < DAYS_COUNT; ++i) {
     arrDays_[i].labelElementsCount->setFont(fontCounter);
-    arrDays_[i].labelElementsCount->setStyleSheet("background: none; color: #000000; font: italic;");
+    arrDays_[i].labelElementsCount->setStyleSheet(QStringLiteral("background: none; color: #000000; font: italic;"));
   }
 
-  int iTime = QDateTime::currentDateTime().msecsTo(
-    QDateTime::currentDateTime().date().startOfDay().addDays(1)
-  );
+  int iTime = QDateTime::currentDateTime().msecsTo(QDateTime::currentDateTime().date().startOfDay().addDays(1));
 
   timer_->start(iTime);
 }
@@ -258,32 +246,35 @@ void MainWindow::sendPutRequestTte(int dayIndex, int elemIndex) {
   QJsonObject json;
 
   QJsonArray jArr;
-  foreach(charStyle_t ch, ttElem.charStyleVector) {
+  foreach (charStyle_t ch, ttElem.charStyleVector) {
     QJsonObject jChar;
-    jChar.insert("bold", ch.bold);
-    jChar.insert("italic", ch.italic);
-    jChar.insert("underline", ch.underline);
-    jChar.insert("strike", ch.strike);
-    jChar.insert("item", ch.item);
-    jChar.insert("star", ch.star);
-    jChar.insert("sColor", ch.sColor);
-    jChar.insert("spellChecker", ch.spellChecker);
+    jChar.insert(QStringLiteral("bold"), ch.bold);
+    jChar.insert(QStringLiteral("italic"), ch.italic);
+    jChar.insert(QStringLiteral("underline"), ch.underline);
+    jChar.insert(QStringLiteral("strike"), ch.strike);
+    jChar.insert(QStringLiteral("item"), ch.item);
+    jChar.insert(QStringLiteral("star"), ch.star);
+    jChar.insert(QStringLiteral("sColor"), ch.sColor);
+    jChar.insert(QStringLiteral("spellChecker"), ch.spellChecker);
     jArr.push_back(jChar);
   }
 
   QJsonDocument jDoc;
   jDoc.setArray(jArr);
-  json.insert("effects", QString(jDoc.toJson()));
+  json.insert(QStringLiteral("effects"), QString(jDoc.toJson()));
 
-  json.insert("tagColorNum", ttElem.tagColorNum);
-  json.insert("mainText", ttElem.text);
-  json.insert("timeFrom", ttElem.timeStart);
-  json.insert("timeTo", ttElem.timeEnd);
-  json.insert("date", QDateTime(arrDays_[dayIndex].date).toMSecsSinceEpoch());
+  json.insert(QStringLiteral("tagColorNum"), ttElem.tagColorNum);
+  json.insert(QStringLiteral("mainText"), ttElem.text);
+  json.insert(QStringLiteral("timeFrom"), ttElem.timeStart);
+  json.insert(QStringLiteral("timeTo"), ttElem.timeEnd);
+
+  QDateTime dt;
+  dt.setDate(arrDays_[dayIndex].date);
+  json.insert(QStringLiteral("date"), dt.toMSecsSinceEpoch());
   QJsonDocument jsonDoc(json);
 
   QUrl url = QUrl(Network::serverUrl + Network::editTTElementUrl + '/' + QString::number(ttElem.idOnServer));
-  server->sendPutRequestWithBearerToken(url , jsonDoc.toJson(), userData->getAccessToken());
+  server->sendPutRequestWithBearerToken(url, jsonDoc.toJson(), userData->getAccessToken());
 }
 
 void MainWindow::allocateMemoryForDays() {
@@ -321,59 +312,59 @@ void MainWindow::initializeDaysParameters() {
     arrDays_[i].groupBoxElementsHeight = 370;
     arrDays_[i].elementsCount = 0;
     arrDays_[i].elementsScaledCount = 0;
-    arrDays_[i].labelElementsCount->setText("");
+    arrDays_[i].labelElementsCount->setText(QLatin1String(""));
   }
 }
 
 void MainWindow::setDaysStructure() {
   for (int i = 0; i < DAYS_COUNT; i++) {
-    arrDays_[i].groupBoxDay->setStyleSheet("QGroupBox {background: #F7F7F7; border: 1.5px solid #F1F1F1; border-radius: 20px;}");
+    arrDays_[i].groupBoxDay->setStyleSheet("QGroupBox {background: #F7F7F7; border: 1.5px solid #F1F1F1; "
+                                           "border-radius: 20px;}");
     arrDays_[i].groupBoxDay->setLayout(arrDays_[i].layoutFullDay);
 
     arrDays_[i].layoutFullDay->setContentsMargins(10, 10, 10, 30);
 
-    //day info
+    // day info
     arrDays_[i].layoutFullDay->addLayout(arrDays_[i].layoutDayInfo);
-    arrDays_[i].labelDate->setStyleSheet("background: none; color: #000000;");
+    arrDays_[i].labelDate->setStyleSheet(QStringLiteral("background: none; color: #000000;"));
     arrDays_[i].layoutDayInfo->addWidget(arrDays_[i].labelDate);
 
     arrDays_[i].layoutDayInfo->addStretch(11);
     arrDays_[i].layoutDayInfo->addWidget(arrDays_[i].labelElementsCount, Qt::AlignRight);
 
-    //scroll area for elements
+    // scroll area for elements
     arrDays_[i].layoutFullDay->addWidget(arrDays_[i].scrollArea);
-    //const int dayWidgetScrollAreaWidth = 277;
+    // const int dayWidgetScrollAreaWidth = 277;
     const int dayWidgetScrollAreaHeight = 370;
     arrDays_[i].scrollArea->setFixedHeight(dayWidgetScrollAreaHeight);
 
-    arrDays_[i].scrollArea->setStyleSheet("QScrollArea {background: #FFFFFF; border: 0.4px solid #E3E3E3; border-radius: 9px;}");
+    arrDays_[i].scrollArea->setStyleSheet("QScrollArea {background: #FFFFFF; border: 0.4px solid #E3E3E3; "
+                                          "border-radius: 9px;}");
 
-    arrDays_[i].scrollArea->verticalScrollBar()->setStyleSheet(
-      "QScrollBar:vertical {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "width: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+    arrDays_[i].scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                               "border: 0.1px solid #FFFFFF;"
+                                                               "background: #FFFFFF;"
+                                                               "width: 9px;"
+                                                               "margin: 0px 0px 0px 0px;}"
 
-      "QScrollBar::handle:vertical {"
-        "border: 0.5px solid #E3E3E3;"
-        "border-radius: 2px;"
-        "background: #FCFCFC;"
-        "min-height: 0px;}"
+                                                               "QScrollBar::handle:vertical {"
+                                                               "border: 0.5px solid #E3E3E3;"
+                                                               "border-radius: 2px;"
+                                                               "background: #FCFCFC;"
+                                                               "min-height: 0px;}"
 
-      "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                                               "QScrollBar::add-line:vertical {"
+                                                               "border: none;"
+                                                               "background: none;}"
 
-      "QScrollBar::sub-line:vartical {"
-        "border: none;"
-        "background: none;}"
-    );
+                                                               "QScrollBar::sub-line:vartical {"
+                                                               "border: none;"
+                                                               "background: none;}");
 
     arrDays_[i].scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     arrDays_[i].scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    oldStyle_ = "";
+    oldStyle_ = QLatin1String("");
 
     QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
     effect->setBlurRadius(7);
@@ -382,14 +373,14 @@ void MainWindow::setDaysStructure() {
     effect->setColor("#909090");
     arrDays_[i].scrollArea->setGraphicsEffect(effect);
 
-    //zone for elements
+    // zone for elements
     arrDays_[i].scrollArea->setWidgetResizable(true);
     arrDays_[i].scrollArea->setWidget(arrDays_[i].widgetDay);
     arrDays_[i].widgetDay->setFixedHeight(arrDays_[i].groupBoxElementsHeight);
     arrDays_[i].widgetDay->setLayout(arrDays_[i].helpLayout);
 
     arrDays_[i].helpLayout->addLayout(arrDays_[i].layoutDayElements, Qt::AlignCenter);
-    arrDays_[i].layoutDayElements->setContentsMargins(6, 10, 0, 10); //i don't know why, but it's badly needed
+    arrDays_[i].layoutDayElements->setContentsMargins(6, 10, 0, 10); // i don't know why, but it's badly needed
     arrDays_[i].layoutDayElements->setSpacing(15);
   }
 }
@@ -397,54 +388,52 @@ void MainWindow::setDaysStructure() {
 void MainWindow::enterDayArea(int index) {
   arrDays_[index].scrollArea->graphicsEffect()->setEnabled(false);
   if (index != iCurrentDay_) {
-    arrDays_[index].scrollArea->setStyleSheet("QScrollArea {background: #f8feee; border-radius: 9px;}");
-  }
-  else {
-    arrDays_[iCurrentDay_].scrollArea->setStyleSheet("QScrollArea {background: #e7f4fe; border-radius: 9px;}");
+    arrDays_[index].scrollArea->setStyleSheet(QStringLiteral("QScrollArea {background: #f8feee; border-radius: 9px;}"));
+  } else {
+    arrDays_[iCurrentDay_].scrollArea->setStyleSheet(
+        QStringLiteral("QScrollArea {background: #e7f4fe; border-radius: 9px;}"));
   }
 }
 
 void MainWindow::leaveDayArea(int index) {
   arrDays_[index].scrollArea->graphicsEffect()->setEnabled(true);
-  arrDays_[index].scrollArea->setStyleSheet("border-radius: 9px;");
+  arrDays_[index].scrollArea->setStyleSheet(QStringLiteral("border-radius: 9px;"));
 }
 
 void MainWindow::defineDayMoveFrom(int dayIndex, QString sColor) {
-  if (oldStyle_ == "") {
+  if (oldStyle_ == QLatin1String("")) {
     oldStyle_ = arrDays_[dayIndex].scrollArea->verticalScrollBar()->styleSheet();
-    arrDays_[dayIndex].scrollArea->verticalScrollBar()->setStyleSheet(
-      "QScrollBar:vertical {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "width: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+    arrDays_[dayIndex].scrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                                      "border: 0.1px solid #FFFFFF;"
+                                                                      "background: #FFFFFF;"
+                                                                      "width: 9px;"
+                                                                      "margin: 0px 0px 0px 0px;}"
 
-      "QScrollBar::handle:vertical {"
-        "border: 0.5px solid #E3E3E3;"
-        "border-radius: 2px;"
-        "background: #" + sColor + ";" //#d0f896
-        "min-height: 0px;}"
+                                                                      "QScrollBar::handle:vertical {"
+                                                                      "border: 0.5px solid #E3E3E3;"
+                                                                      "border-radius: 2px;"
+                                                                      "background: #" +
+                                                                      sColor +
+                                                                      ";" //#d0f896
+                                                                      "min-height: 0px;}"
 
-      "QScrollBar::add-line:vertical {"
-      "border: none;"
-      "background: none;}"
+                                                                      "QScrollBar::add-line:vertical {"
+                                                                      "border: none;"
+                                                                      "background: none;}"
 
-      "QScrollBar::sub-line:vartical {"
-      "border: none;"
-      "background: none;}"
-    );
-  }
-  else {
+                                                                      "QScrollBar::sub-line:vartical {"
+                                                                      "border: none;"
+                                                                      "background: none;}");
+  } else {
     arrDays_[dayIndex].scrollArea->verticalScrollBar()->setStyleSheet(oldStyle_);
-    oldStyle_ = "";
+    oldStyle_ = QLatin1String("");
   }
 }
 
 void MainWindow::changeElementsLayoutHeight(const int dayIndex, const int diffHeight) {
   if (diffHeight > 0) {
     arrDays_[dayIndex].elementsScaledCount++;
-  }
-  else {
+  } else {
     arrDays_[dayIndex].elementsScaledCount--;
   }
 
@@ -452,19 +441,20 @@ void MainWindow::changeElementsLayoutHeight(const int dayIndex, const int diffHe
     arrDays_[dayIndex].groupBoxElementsHeight =
         ELEMENT_HEIGHT_ * (arrDays_[dayIndex].elementsCount - arrDays_[dayIndex].elementsScaledCount) +
         (ELEMENT_HEIGHT_ + 48) * arrDays_[dayIndex].elementsScaledCount + 25;
-  }
-  else {
+  } else {
     arrDays_[dayIndex].groupBoxElementsHeight = 370;
   }
   arrDays_[dayIndex].widgetDay->setFixedHeight(arrDays_[dayIndex].groupBoxElementsHeight);
 }
 
-void MainWindow::recieveTimetableElementDayAndElemIndexAndTime(int dayIndex, int elemIndex, QString timeStart, QString timeEnd) {
+void MainWindow::recieveTimetableElementDayAndElemIndexAndTime(int dayIndex, int elemIndex, QString timeStart,
+                                                               QString timeEnd) {
   arrDaysData_[dayIndex][elemIndex].timeStart = timeStart;
   arrDaysData_[dayIndex][elemIndex].timeEnd = timeEnd;
 }
 
-void MainWindow::recieveTimetableDayAndElementIndexAndText(int dayIndex, int elemIndex, QString text, QVector<charStyle_t> vectorStyles) {
+void MainWindow::recieveTimetableDayAndElementIndexAndText(int dayIndex, int elemIndex, QString text,
+                                                           QVector<charStyle_t> vectorStyles) {
   arrDaysData_[dayIndex][elemIndex].text = text;
-  arrDaysData_[dayIndex][elemIndex].charStyleVector = vectorStyles;
+  arrDaysData_[dayIndex][elemIndex].charStyleVector = std::move(vectorStyles);
 }

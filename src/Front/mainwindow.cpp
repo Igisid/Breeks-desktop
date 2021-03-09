@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) :
   // logout signal
   connect(server.get(), &Network::ServerConnection::logout, this, &MainWindow::logout);
 
-  this->setStyleSheet("background: #F9F9F9");
+  this->setStyleSheet(QStringLiteral("background: #F9F9F9"));
 
   connect(ui->buttonImage, &ImageHover::imageEnter, this, &MainWindow::setImageBackgroundView);
   connect(ui->buttonImage, &ImageHover::imageLeave, this, &MainWindow::setImageBackgroundView);
@@ -110,17 +110,17 @@ MainWindow::~MainWindow() {
 
 void MainWindow::logout() {
   clearWeekData();
-  server->getUserData()->setAccessToken("");
-  server->getUserData()->setRefreshToken("");
+  server->getUserData()->setAccessToken(QLatin1String(""));
+  server->getUserData()->setRefreshToken(QLatin1String(""));
   ui->authFrom->show();
   ui->demoLable->show();
-  writeToRfrshFile("", "");
+  writeToRfrshFile(QLatin1String(""), QLatin1String(""));
 }
 
 void MainWindow::writeToRfrshFile(const QString & refresh, const QString & email) {
   QJsonObject json;
-  json.insert("refresh", refresh);
-  json.insert("email", email);
+  json.insert(QStringLiteral("refresh"), refresh);
+  json.insert(QStringLiteral("email"), email);
   QJsonDocument jsonDoc(json);
   QByteArray jsonData = jsonDoc.toJson();
 
@@ -151,8 +151,8 @@ QJsonObject * MainWindow::openRefreshFile() {
 void MainWindow::checkSavedSession() {
   QJsonObject * jsonRfrsh = openRefreshFile();
   if (jsonRfrsh != nullptr) {
-    QString refreshToken = jsonRfrsh->value("refresh").toString();
-    QString email = jsonRfrsh->value("email").toString();
+    QString refreshToken = jsonRfrsh->value(QStringLiteral("refresh")).toString();
+    QString email = jsonRfrsh->value(QStringLiteral("email")).toString();
     if (refreshToken.isEmpty()) {
       // registration form, auto-filling email if having the one
       if (!email.isEmpty()) {
@@ -206,7 +206,7 @@ void MainWindow::initWeekData(const QString & token) {
 void MainWindow::initBreeksLines(const QList<breeksData_t> & listOfLines) {
   for (auto breeksLine : listOfLines) {
     bool arrConditions[6] = {false};
-    QString sConditions = QString("000000").number(breeksLine.conditions, 2);
+    QString sConditions = QStringLiteral("000000").number(breeksLine.conditions, 2);
     while (sConditions.length() != 6) {
       sConditions = "0" + sConditions;
     }
@@ -215,7 +215,7 @@ void MainWindow::initBreeksLines(const QList<breeksData_t> & listOfLines) {
     }
 
     int arrStates[6];
-    QString sStates = QString("000000").number(breeksLine.states, 4);
+    QString sStates = QStringLiteral("000000").number(breeksLine.states, 4);
     while (sStates.length() != 6) {
       sStates = "1" + sStates;
     }
@@ -566,22 +566,22 @@ void MainWindow::on_reg_clicked() {
   if (ui->mailReg->text().isEmpty() || ui->passwordReg->text().isEmpty() ||
       ui->password2Reg->text().isEmpty()) {
     QMessageBox message;
-    message.setText("Вы заполнили не все поля");
+    message.setText(QStringLiteral("Вы заполнили не все поля"));
     message.exec();
 
     return;
   }
   if (ui->passwordReg->text() != ui->password2Reg->text()) {
     QMessageBox message;
-    message.setText("Пароли не совпадают");
+    message.setText(QStringLiteral("Пароли не совпадают"));
     message.exec();
 
     return;
   }
 
   QJsonObject json;
-  json.insert("userName", ui->mailReg->text());
-  json.insert("password", ui->passwordReg->text());
+  json.insert(QStringLiteral("userName"), ui->mailReg->text());
+  json.insert(QStringLiteral("password"), ui->passwordReg->text());
 
   QUrl url = QUrl(Network::serverUrl + Network::registrationUrl);
   QJsonDocument jsonDoc(json);
@@ -596,7 +596,7 @@ void MainWindow::on_reg_clicked() {
 void MainWindow::on_login_clicked() {
   if (ui->mail->text().isEmpty() || ui->password->text().isEmpty()) {
     QMessageBox message;
-    message.setText("Вы заполнили не все поля");
+    message.setText(QStringLiteral("Вы заполнили не все поля"));
     message.exec();
 
     return;
@@ -615,7 +615,7 @@ void MainWindow::loginReply(bool login) {
   }
   else {
     QMessageBox message;
-    message.setText("Неверный логин или пароль");
+    message.setText(QStringLiteral("Неверный логин или пароль"));
     message.exec();
     ui->password->clear();
   }
@@ -668,17 +668,18 @@ void MainWindow::on_logoutButton_clicked() {
 
 void MainWindow::on_hideCalendar_clicked() {
   if (!calendarWidget->isHidden()) {
-    ui->hideCalendar->setStyleSheet("border-image:url(:/Images/Front/Images/show.png); background: none;");
+    ui->hideCalendar->setStyleSheet(
+        QStringLiteral("border-image:url(:/Images/Front/Images/show.png); background: none;"));
     calendarWidget->hide();
     calendarScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-  }
-  else {
-    ui->hideCalendar->setStyleSheet("border-image:url(:/Images/Front/Images/hide.png); background: none;");
+  } else {
+    ui->hideCalendar->setStyleSheet(
+        QStringLiteral("border-image:url(:/Images/Front/Images/hide.png); background: none;"));
     calendarWidget->show();
     calendarScrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
   }
 }
 
 void MainWindow::on_showInfoButton_clicked() {
-  QDesktopServices::openUrl(QUrl("https://github.com/BreeksApp/Breeks-presentation"));
+  QDesktopServices::openUrl(QUrl(QStringLiteral("https://github.com/BreeksApp/Breeks-presentation")));
 }

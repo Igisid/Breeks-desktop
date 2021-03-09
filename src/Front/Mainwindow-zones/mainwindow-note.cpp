@@ -2,9 +2,9 @@
 #include "Front/GeneralTextEdit/notemark.h"
 
 QUrl MainWindow::createGetNoteUrl(const int numPage) {
-  QString date = "";
+  QString date = QLatin1String("");
   date.setNum(QDateTime(arrDays_[0].date).toMSecsSinceEpoch());
-  QString sNumPage = "";
+  QString sNumPage = QLatin1String("");
   sNumPage.setNum(numPage);
 
   return QUrl(Network::serverUrl + Network::getNoteByDateAndPageUrl + date + "/" + sNumPage);
@@ -18,26 +18,26 @@ QByteArray MainWindow::createJsonForSendingNote(int page) {
   QJsonObject json;
 
   QString noteText = ui->note->toPlainText();
-  json.insert("text", noteText);
+  json.insert(QStringLiteral("text"), noteText);
 
   QJsonArray jArr;
   foreach(charStyle_t ch, ui->note->getCharStyleVector()) {
     QJsonObject jChar;
-    jChar.insert("bold", ch.bold);
-    jChar.insert("italic", ch.italic);
-    jChar.insert("underline", ch.underline);
-    jChar.insert("strike", ch.strike);
-    jChar.insert("item", ch.item);
-    jChar.insert("star", ch.star);
-    jChar.insert("sColor", ch.sColor);
-    jChar.insert("spellChecker", ch.spellChecker);
+    jChar.insert(QStringLiteral("bold"), ch.bold);
+    jChar.insert(QStringLiteral("italic"), ch.italic);
+    jChar.insert(QStringLiteral("underline"), ch.underline);
+    jChar.insert(QStringLiteral("strike"), ch.strike);
+    jChar.insert(QStringLiteral("item"), ch.item);
+    jChar.insert(QStringLiteral("star"), ch.star);
+    jChar.insert(QStringLiteral("sColor"), ch.sColor);
+    jChar.insert(QStringLiteral("spellChecker"), ch.spellChecker);
     jArr.push_back(jChar);
   }
   QJsonDocument jDoc;
   jDoc.setArray(jArr);
-  json.insert("effects", QString(jDoc.toJson()));
+  json.insert(QStringLiteral("effects"), QString(jDoc.toJson()));
 
-  json.insert("page", page);
+  json.insert(QStringLiteral("page"), page);
   json.insert("date", QDateTime(arrDays_[0].date).toMSecsSinceEpoch());
 
   QJsonDocument jsonDoc(json);

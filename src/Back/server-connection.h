@@ -77,34 +77,34 @@ namespace Network {
   };
 
 
-  // ===================
-  //  API Properties
-  //====================
-  const QString serverUrl = "https://breeks.cf";
-  const QString registrationUrl = "/user/registration";
-  const QString authUrl = "/auth/signin";
-  const QString refreshUrl = "/auth/refresh";
+// ===================
+//  API Properties
+//====================
+const QString serverUrl = QStringLiteral("https://breeks.cf");
+const QString registrationUrl = QStringLiteral("/user/registration");
+const QString authUrl = QStringLiteral("/auth/signin");
+const QString refreshUrl = QStringLiteral("/auth/refresh");
 
-  // TimetableElements
-  const QString addTTElementUrl = "/timetableElement/addTimetableElement";
-  const QString editTTElementUrl = "/timetableElement/editTimetableElement";
-  const QString deleteTTElementUrl = "/timetableElement/deleteTimetableElement";
-  const QString getTTElementsForDayUrl = "/timetableElement/listOfTimetableElements/";
+// TimetableElements
+const QString addTTElementUrl = QStringLiteral("/timetableElement/addTimetableElement");
+const QString editTTElementUrl = QStringLiteral("/timetableElement/editTimetableElement");
+const QString deleteTTElementUrl = QStringLiteral("/timetableElement/deleteTimetableElement");
+const QString getTTElementsForDayUrl = QStringLiteral("/timetableElement/listOfTimetableElements/");
 
-  // BreeksLines
-  const QString addBreeksLineUrl = "/breeks/addLine";
-  const QString editBreeksLineUrl = "/breeks/editLine";
-  const QString deleteBreeksLineUrl = "/breeks/deleteLine";
-  const QString getAllLinesInWeekUrl = "/breeks/listOfLines/";
+// BreeksLines
+const QString addBreeksLineUrl = QStringLiteral("/breeks/addLine");
+const QString editBreeksLineUrl = QStringLiteral("/breeks/editLine");
+const QString deleteBreeksLineUrl = QStringLiteral("/breeks/deleteLine");
+const QString getAllLinesInWeekUrl = QStringLiteral("/breeks/listOfLines/");
 
-  // Notes
-  const QString addNoteUrl = "/note/addNote";
-  const QString editNoteUrl = "/note/editNote";
-  const QString getNoteByDateAndPageUrl = "/note/getNoteByDateAndPage/";
+// Notes
+const QString addNoteUrl = QStringLiteral("/note/addNote");
+const QString editNoteUrl = QStringLiteral("/note/editNote");
+const QString getNoteByDateAndPageUrl = QStringLiteral("/note/getNoteByDateAndPage/");
 
-  // Image
-  const QString addImageUrl = "/image/addImage";
-  const QString getImageUrl = "/image/getImage/";
-}
+// Image
+const QString addImageUrl = QStringLiteral("/image/addImage");
+const QString getImageUrl = QStringLiteral("/image/getImage/");
+} // namespace Network
 
 #endif // SERVERCONNECTION_H

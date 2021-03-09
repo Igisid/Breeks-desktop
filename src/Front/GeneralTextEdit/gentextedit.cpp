@@ -28,30 +28,28 @@ GenTextEdit::GenTextEdit(QWidget *parent) :
   charCounter_ = 0;
   detailsSetCharStyle(globCh);
 
-  this->verticalScrollBar()->setStyleSheet(
-    "QScrollBar:vertical {"
-        "background-color: #FFFFF0;"
-        "width: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+  this->verticalScrollBar()->setStyleSheet(QStringLiteral("QScrollBar:vertical {"
+                                                          "background-color: #FFFFF0;"
+                                                          "width: 9px;"
+                                                          "margin: 0px 0px 0px 0px;}"
 
-    "QScrollBar::handle:vartical {"
-        "border-radius: 4px;"
-        "background: #e3e3df;"
-        "min-height: 0px;}"
+                                                          "QScrollBar::handle:vartical {"
+                                                          "border-radius: 4px;"
+                                                          "background: #e3e3df;"
+                                                          "min-height: 0px;}"
 
-    "QScrollBar::handle:vertical:hover {"
-        "border-radius: 4px;"
-        "background: #c7c7bf;"
-        "min-height: 0px;}"
+                                                          "QScrollBar::handle:vertical:hover {"
+                                                          "border-radius: 4px;"
+                                                          "background: #c7c7bf;"
+                                                          "min-height: 0px;}"
 
-    "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                                          "QScrollBar::add-line:vertical {"
+                                                          "border: none;"
+                                                          "background: none;}"
 
-    "QScrollBar::sub-line:vertical {"
-        "border: none;"
-        "background: none;}"
-  );
+                                                          "QScrollBar::sub-line:vertical {"
+                                                          "border: none;"
+                                                          "background: none;}"));
   this->setContextMenuPolicy(Qt::ContextMenuPolicy::NoContextMenu);
 }
 
@@ -492,7 +490,7 @@ void GenTextEdit::checkSpelling() {
     }
     else if (!word.isEmpty()) {
       detailsCheckSpelling(word, i);
-      word = "";
+      word = QLatin1String("");
     }
   }
 

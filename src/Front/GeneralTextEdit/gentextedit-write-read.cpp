@@ -2,8 +2,8 @@
 
 void GenTextEdit::readFromDB(const int currentFile) {
   QJsonObject textInfo = filesystem::readTextEdidFromDB(currentFile);
-  QJsonArray jChars = textInfo.value("charStyleVector").toArray();
-  QString text = textInfo.value("text").toString();
+  QJsonArray jChars = textInfo.value(QStringLiteral("charStyleVector")).toArray();
+  QString text = textInfo.value(QStringLiteral("text")).toString();
 
   charStyleVector_.clear();
   charCounter_ = jChars.size();
@@ -21,30 +21,30 @@ void GenTextEdit::readFromDB(const int currentFile) {
     int cursorPos = this->textCursor().position();
     this->fillCharStyleVector(cursorPos, 1, ch);
     out >> tmpChar;
-    this->textCursor().insertText(static_cast<QString>(tmpChar), charFormat); //add with style effects
+    this->textCursor().insertText(static_cast<QString>(tmpChar), charFormat); // add with style effects
 
     QTextCursor c = this->textCursor();
     c.movePosition(QTextCursor::Left, QTextCursor::KeepAnchor);
     detailsColorText(c, ch.sColor);
   }
   checkSpelling();
-  undoRedoBuffer_ = new UndoRedoText;
+  undoRedoBuffer_ = std::make_unique<UndoRedoText>();
 }
 
 void GenTextEdit::writeToDB(const int currentFile) {
   textInfo_t info;
-  QJsonArray jChars;
+  //  QJsonArray jChars;
 
-  foreach(charStyle_t ch, charStyleVector_) {
+  foreach (charStyle_t ch, charStyleVector_) {
     QJsonObject jChar;
-    jChar.insert("bold", ch.bold);
-    jChar.insert("italic", ch.italic);
-    jChar.insert("underline", ch.underline);
-    jChar.insert("strike", ch.strike);
-    jChar.insert("item", ch.item);
-    jChar.insert("star", ch.star);
-    jChar.insert("sColor", ch.sColor);
-    jChar.insert("spellChecker", ch.spellChecker);
+    jChar.insert(QStringLiteral("bold"), ch.bold);
+    jChar.insert(QStringLiteral("italic"), ch.italic);
+    jChar.insert(QStringLiteral("underline"), ch.underline);
+    jChar.insert(QStringLiteral("strike"), ch.strike);
+    jChar.insert(QStringLiteral("item"), ch.item);
+    jChar.insert(QStringLiteral("star"), ch.star);
+    jChar.insert(QStringLiteral("sColor"), ch.sColor);
+    jChar.insert(QStringLiteral("spellChecker"), ch.spellChecker);
     info.jArr.push_back(jChar);
   }
 
