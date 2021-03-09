@@ -1,11 +1,13 @@
-QT       += core gui sql qml quick quickwidgets network
+QT += core gui sql qml quick quickwidgets network
 
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+equals(QT_MAJOR_VERSION, 6): QT += core5compat
+
 RC_ICONS = eeicon.ico
 
-CONFIG += c++14
+CONFIG += c++2a
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -62,6 +64,7 @@ SOURCES += \
     Front/Mainwindow-zones/mainwindow-workzone.cpp \
     Front/MainElements/EmojiHub/emojihub.cpp \
     Front/mainwindow.cpp \
+    initializer.cpp \
     main.cpp
 
 HEADERS += \
@@ -91,12 +94,18 @@ HEADERS += \
     Front/MainElements/infogb.h \
     Front/MainElements/timeedit.h \
     Front/datastructures.h \
-    Front/effects.hpp \
+    Front/effects.h \
     Front/MainElements/EmojiHub/emojihub.h \
     Front/mainwindow.h
 
+INCLUDEPATH += \
+    Front/MainElements \
+    Front/GeneralTextEdit \
+    Front/GeneralTextEdit/TimeTable \
+    Front/MainElements/EmojiHub
+
 FORMS += \
-    mainwindow.ui
+    Front/mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
