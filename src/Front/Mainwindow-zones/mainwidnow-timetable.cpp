@@ -75,7 +75,9 @@ void MainWindow::buildTimeTable() {
 
   timer_ = new QTimer();
   timer_->setSingleShot(true);
-  connect(timer_, SIGNAL(timeout()), this, SLOT(setDayInfo()));
+
+  /// @bug This is not a normalized connection
+  connect(timer_.get(), SIGNAL(timeout()), this, SLOT(setDayInfo()));
   iCurrentDay_ = 0;
 
   setDayInfo();
@@ -300,18 +302,15 @@ void MainWindow::allocateMemoryForDays() {
     arrDays_[i].helpLayout = new QVBoxLayout;
     arrDays_[i].layoutDayElements = new QVBoxLayout;
 
-    connect(arrDays_[i].widgetDay, SIGNAL(dropElement(const int, const int, const int, const elementData_t)),
-            this, SLOT(dropElement(const int, const int, const int, const elementData_t)));
+    connect(arrDays_[i].widgetDay, &DayWidget::dropElement, this, &MainWindow::dropElement);
 
-    connect(arrDays_[i].widgetDay, SIGNAL(sendDayAndElementIndex(const int, const int, bool)),
-            this, SLOT(recieveDayAndElementIndex(const int, const int, bool)));
+    connect(arrDays_[i].widgetDay, &DayWidget::sendDayAndElementIndex, this, &MainWindow::recieveDayAndElementIndex);
 
-    connect(arrDays_[i].widgetDay, SIGNAL(sendElementsHeight(const int, const int)),
-            this, SLOT(sendElementsHeight(const int, const int)));
+    connect(arrDays_[i].widgetDay, &DayWidget::sendElementsHeight, this, &MainWindow::sendElementsHeight);
 
-    connect(arrDays_[i].widgetDay, SIGNAL(moveElement()), this, SLOT(mousePressedByDragElement()));
-    connect(arrDays_[i].widgetDay, SIGNAL(elementEnterArea(int)), this, SLOT(enterDayArea(int)));
-    connect(arrDays_[i].widgetDay, SIGNAL(elementLeaveArea(int)), this, SLOT(leaveDayArea(int)));
+    connect(arrDays_[i].widgetDay, &DayWidget::moveElement, this, &MainWindow::mousePressedByDragElement);
+    connect(arrDays_[i].widgetDay, &DayWidget::elementEnterArea, this, &MainWindow::enterDayArea);
+    connect(arrDays_[i].widgetDay, &DayWidget::elementLeaveArea, this, &MainWindow::leaveDayArea);
   }
 
   initializeDaysParameters();

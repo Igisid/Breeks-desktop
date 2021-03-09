@@ -13,8 +13,8 @@ void MainWindow::setInfoButtonsStyle() {
 
   ui->infoButton->setStyleSheet("QPushButton {background: " + arrTags_[0].sColor + "; border-radius: 8px;}");
 
-  connect(ui->infoGb, SIGNAL(enter()), this, SLOT(infoGBEnter()));
-  connect(ui->infoGb, SIGNAL(leave()), this, SLOT(infoGBLeave()));
+  connect(ui->infoGb, &InfoGB::enter, this, &MainWindow::infoGBEnter);
+  connect(ui->infoGb, &InfoGB::leave, this, &MainWindow::infoGBLeave);
 }
 
 void MainWindow::on_infoButton_clicked()

@@ -26,14 +26,14 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
     breeksZone->arrBreeks[i]->setFixedSize(90, 90);
     breeksZone->arrBreeks[i]->setStyleSheet("background: none;");
 
-    connect(breeksZone->arrBreeks[i], SIGNAL(sendSateToLilDay(int, int, int)),
-            this, SLOT(changeBreeksZoneLilDayState(int, int, int)));
+    /// @bug This is not a normalized connection
+    connect(breeksZone->arrBreeks[i], SIGNAL(sendSateToLilDay(int, int, int)), this,
+            SLOT(changeBreeksZoneLilDayState(int, int, int)));
 
-    connect(breeksZone->arrBreeks[i], SIGNAL(moveBreek(int, int, bool)),
-            this, SLOT(moveBreek(int, int, bool)));
+    connect(breeksZone->arrBreeks[i], &Breek::moveBreek, this, &MainWindow::moveBreek);
 
-    connect(breeksZone->arrBreeks[i], SIGNAL(isHere(int, int, bool)),
-            this, SLOT(setBreeksZoneLilDayShadow(int, int, bool)));
+    connect(breeksZone->arrBreeks[i], &Breek::isHere, this, &MainWindow::setBreeksZoneLilDayShadow);
+    connect(breeksZone->buttonDelete, &DeleteBreeksZoneButton::deleteZone, this, &MainWindow::deleteBreeksZone);
   }
 
   connect(breeksZone->buttonDelete, SIGNAL(deleteZone(int)), this, SLOT(deleteBreeksZone(int)));
@@ -349,7 +349,7 @@ void MainWindow::buildBreeksDescriptionZone() {
       lay2->addSpacing(15);
     }
     prevMonth = monthName;
-    connect(week, SIGNAL(changeCalendarWeek(qint64)), this, SLOT(changeWeek(qint64)));
+    connect(week, &CalendarWeek::changeCalendarWeek, this, &MainWindow::changeWeek);
 
     lay2->addWidget(week, Qt::AlignCenter);
     calendarWeeks.append(week);
@@ -389,20 +389,19 @@ void MainWindow::buildBreeksDescriptionZone() {
 
 void MainWindow::setDaysConnect(breeksZone_t* breeksZone) {
   for (int i = 0; i < DAYS_COUNT; ++i) {
-    connect(breeksZone->arrBreeksZoneDays[i], SIGNAL(singleClick()),
-            breeksZone->arrBreeks[i], SLOT(changeBreekState()));
+    connect(breeksZone->arrBreeksZoneDays[i], qOverload<>(&DescriptionZoneDayButton::singleClick),
+            breeksZone->arrBreeks[i], &Breek::changeBreekState);
 
-    connect(breeksZone->arrBreeksZoneDays[i], SIGNAL(singleClick(int)),
-            this, SLOT(sendPutRequestBl(int)));
+    connect(breeksZone->arrBreeksZoneDays[i], qOverload<int>(&DescriptionZoneDayButton::singleClick), this,
+            &MainWindow::sendPutRequestBl);
 
-    connect(breeksZone->arrBreeksZoneDays[i], SIGNAL(doubleClick(int, int)),
-            this, SLOT(descriptionZoneDayDobleClick(int, int)));
+    connect(breeksZone->arrBreeksZoneDays[i], &DescriptionZoneDayButton::doubleClick, this,
+            &MainWindow::descriptionZoneDayDobleClick);
 
-    connect(breeksZone->arrBreeks[i], SIGNAL(changeState(int, int)),
-            this, SLOT(changeLilDayState(int, int)));
+    connect(breeksZone->arrBreeks[i], &Breek::changeState, this, &MainWindow::changeLilDayState);
 
-    connect(breeksZone->arrBreeksZoneDays[i], SIGNAL(changeZoneIndex(int)),
-            breeksZone->arrBreeks[i], SLOT(setZoneIndex(int)));
+    connect(breeksZone->arrBreeksZoneDays[i], &DescriptionZoneDayButton::changeZoneIndex, breeksZone->arrBreeks[i],
+            &Breek::setZoneIndex);
   }
 }
 

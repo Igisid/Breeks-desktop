@@ -9,7 +9,7 @@ ElementTemplate::ElementTemplate(QGroupBox *parent) :
   timer_(new QTimer())
 {
   timer_->setSingleShot(true);
-  connect(timer_, SIGNAL(timeout()), this, SLOT(sendServerRequest()));
+  connect(timer_, &QTimer::timeout, this, &ElementTemplate::sendServerRequest);
 
   this->setFixedSize(ELEMENT_WIDTH, ELEMENT_HEIGHT);
   this->setStyleSheet("ElementTemplate {background: #F9F9F9; border: 0.4px solid #cbcbcb; border-radius: 8px;}");
@@ -46,8 +46,8 @@ ElementTemplate::ElementTemplate(QGroupBox *parent) :
   timeStart_->setAlignment(Qt::AlignCenter);
   timeEnd_->setAlignment(Qt::AlignCenter);
 
-  connect(timeStart_, SIGNAL(timeChanged(const QTime)), this, SLOT(updateElementTime()));
-  connect(timeEnd_, SIGNAL(timeChanged(const QTime)), this, SLOT(updateElementTime()));
+  connect(timeStart_, &QDateTimeEdit::timeChanged, this, &ElementTemplate::updateElementTime);
+  connect(timeEnd_, &TimeEdit::timeChanged, this, &ElementTemplate::updateElementTime);
 
   for (int i = 0; i < TAGS_COUNT; ++i) {
     arrTags_[i].condition = false;
@@ -89,7 +89,7 @@ ElementTemplate::ElementTemplate(QGroupBox *parent) :
   QFont font("Helvetica", 11);
   text_->setFont(font);
 
-  connect(text_, SIGNAL(textChanged()), this, SLOT(updateElementText()));
+  connect(text_, &QTextEdit::textChanged, this, &ElementTemplate::updateElementText);
 
   elementLayout_->addWidget(tagButton_, 0, 0);
   elementLayout_->addWidget(text_, 0, 1, 2, 3);
@@ -100,9 +100,9 @@ ElementTemplate::ElementTemplate(QGroupBox *parent) :
 
   this->setLayout(elementLayout_);
 
-  connect(deleteButton_, SIGNAL (deleteElement()), this, SLOT (deleteElement()));
-  connect(tagButton_, SIGNAL (clicked()), this, SLOT (changeTagColor()));
-  connect(scaleButton_, SIGNAL(clicked()), this, SLOT (scaleTextEdit()));
+  connect(deleteButton_, &DeleteTimetableElementButton::deleteElement, this, &ElementTemplate::deleteElement);
+  connect(tagButton_, &QAbstractButton::clicked, this, &ElementTemplate::changeTagColor);
+  connect(scaleButton_, &QAbstractButton::clicked, this, &ElementTemplate::scaleTextEdit);
 }
 
 void ElementTemplate::mousePressEvent(QMouseEvent *event) {

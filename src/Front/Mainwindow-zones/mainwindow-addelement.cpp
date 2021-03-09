@@ -93,16 +93,14 @@ void MainWindow::addNewElementToLayout(const int index, const int newElementInde
     //create new element object
     ElementTemplate *elem = new ElementTemplate;
 
-    connect(server, SIGNAL(initTEidOnServer(long)), elem, SLOT(setId(long)));
-    connect(elem, SIGNAL(updateId(int, int, long)), this, SLOT(updateTTElementIdOnServer(int, int, long)));
-    connect(elem, SIGNAL(sendEditRequest(int, int)), this, SLOT(sendPutRequestTte(int, int)));
+    connect(server.get(), &Network::ServerConnection::initTEidOnServer, elem, &ElementTemplate::setId);
+    connect(elem, &ElementTemplate::updateId, this, &MainWindow::updateTTElementIdOnServer);
+    connect(elem, &ElementTemplate::sendEditRequest, this, &MainWindow::sendPutRequestTte);
 
-    connect(elem, SIGNAL(sendMimeData(const elementData_t, const QPixmap)),
-            this, SLOT(recieveMimeData(const elementData_t, const QPixmap)));
-
-    connect(elem, SIGNAL(dropNoChanges()), this, SLOT(dropNoChanges()));
-    connect(elem, SIGNAL(defineDayMoveFrom(int, QString)), this, SLOT (defineDayMoveFrom(int, QString)));
-    connect(elem, SIGNAL(deleteItem(int, int, bool)), this, SLOT(recieveDayAndElementIndex(int, int, bool)));
+    connect(elem, &ElementTemplate::sendMimeData, this, &MainWindow::recieveMimeData);
+    connect(elem, &ElementTemplate::dropNoChanges, this, &MainWindow::dropNoChanges);
+    connect(elem, &ElementTemplate::defineDayMoveFrom, this, &MainWindow::defineDayMoveFrom);
+    connect(elem, &ElementTemplate::deleteItem, this, &MainWindow::recieveDayAndElementIndex);
 
     elem->setText(arrDaysData_[index][j].text, arrDaysData_[index][j].charStyleVector);
     elem->setTime(arrDaysData_[index][j].timeStart, arrDaysData_[index][j].timeEnd);
@@ -111,24 +109,22 @@ void MainWindow::addNewElementToLayout(const int index, const int newElementInde
     elem->setIdOnServer(arrDaysData_[index][j].idOnServer);
     elem->setDayAndElementIndex(index, j);
 
-    //for deleting element from arrDaysData_
-    connect(elem, SIGNAL(sendDayAndElementIndex(const int, const int, bool)),
-            this, SLOT(recieveDayAndElementIndex(const int, const int, bool)));
+    // for deleting element from arrDaysData_
+    connect(elem, &ElementTemplate::sendDayAndElementIndex, this, &MainWindow::recieveDayAndElementIndex);
 
-    //for updating info about element's tag color
-    connect(elem, SIGNAL(sendDayAndElementIndexAndTagColor(const int, const int, const int)),
-            this, SLOT(recieveDayAndElementIndexAndTagColor(const int, const int, const int)));
+    // for updating info about element's tag color
+    connect(elem,
+            &ElementTemplate::sendDayAndElementIndexAndTagColor,
+            this,
+            &MainWindow::recieveDayAndElementIndexAndTagColor);
 
-    //for change day heigth after scaling element
-    connect(elem, SIGNAL(changeElementsLayoutHeight(const int, const int)),
-            this, SLOT(changeElementsLayoutHeight(const int, const int)));
+    // for change day heigth after scaling element
+    connect(elem, &ElementTemplate::changeElementsLayoutHeight, this, &MainWindow::changeElementsLayoutHeight);
 
-    //for changing time
-    connect(elem, SIGNAL(changeTime(int, int, QString, QString)),
-            this, SLOT(recieveTimetableElementDayAndElemIndexAndTime(int, int, QString, QString)));
+    // for changing time
+    connect(elem, &ElementTemplate::changeTime, this, &MainWindow::recieveTimetableElementDayAndElemIndexAndTime);
 
-    connect(elem, SIGNAL(changeText(int, int, QString, QVector<charStyle_t>)),
-            this, SLOT(recieveTimetableDayAndElementIndexAndText(int, int, QString, QVector<charStyle_t>)));
+    connect(elem, &ElementTemplate::changeText, this, &MainWindow::recieveTimetableDayAndElementIndexAndText);
 
     arrDays_[index].layoutDayElements->addWidget(elem, Qt::AlignCenter);
 

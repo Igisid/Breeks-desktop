@@ -38,28 +38,23 @@ MainWindow::MainWindow(QWidget *parent) :
   userData = server->getUserData();
 
   // init week signals from server
-  connect(server, SIGNAL(initWeekData(const QString&)),
-        this, SLOT(clearAndInitWeekData(const QString&)));
+  connect(server.get(), &Network::ServerConnection::initWeekData, this, &MainWindow::clearAndInitWeekData);
 
-  connect(server, SIGNAL(sendBreeksLinesToGUI(const QList<breeksData_t>&)),
-        this, SLOT(initBreeksLines(const QList<breeksData_t>&)));
+  connect(server.get(), &Network::ServerConnection::sendBreeksLinesToGUI, this, &MainWindow::initBreeksLines);
 
-  connect(server, SIGNAL(sendTTElementsToGUI(const QList<elementData_t>&)),
-        this, SLOT(initTTElements(const QList<elementData_t>&)));
+  connect(server.get(), &Network::ServerConnection::sendTTElementsToGUI, this, &MainWindow::initTTElements);
 
-  connect(server, SIGNAL(sendNoteToGUI(note_t&)),
-        this, SLOT(initNote(note_t&)));
+  connect(server.get(), &Network::ServerConnection::sendNoteToGUI, this, &MainWindow::initNote);
 
-  connect(server, SIGNAL(sendImageToGUI(const image_t&)),
-        this, SLOT(initImage(const image_t&)));
+  connect(server.get(), &Network::ServerConnection::sendImageToGUI, this, &MainWindow::initImage);
 
   // logout signal
-  connect(server, SIGNAL(logout()), this, SLOT(logout()));
+  connect(server.get(), &Network::ServerConnection::logout, this, &MainWindow::logout);
 
   this->setStyleSheet("background: #F9F9F9");
 
-  connect(ui->buttonImage, SIGNAL(imageEnter(bool)), this, SLOT(setImageBackgroundView(bool)));
-  connect(ui->buttonImage, SIGNAL(imageLeave(bool)), this, SLOT(setImageBackgroundView(bool)));
+  connect(ui->buttonImage, &ImageHover::imageEnter, this, &MainWindow::setImageBackgroundView);
+  connect(ui->buttonImage, &ImageHover::imageLeave, this, &MainWindow::setImageBackgroundView);
 
   timetableElementsCount_ = 0;
   setWorkZone();
@@ -67,17 +62,20 @@ MainWindow::MainWindow(QWidget *parent) :
   setAllElementsEffects();
 
   ui->note->setContentsMargins(10, 10, 10, 10);
-  connect(ui->note, SIGNAL(sendServerRequest(int)), this, SLOT(sendPostRequestNote(int)));
+  connect(ui->note, qOverload<int>(&GenTextEdit::sendServerRequest), this, &MainWindow::sendPostRequestNote);
 
-  //ADD BREEKS FORM
-  connect(this, SIGNAL(sendBreekData(bool*, breeksData_t)), this, SLOT(recieveBreeksZoneData(bool*, breeksData_t)));
-  connect(ui->emojiHub, SIGNAL(changeEmoji(int)), ui->emojiButton, SLOT(changeEmoji(int)));
-  connect(ui->addBreekGB, SIGNAL(focusOut()), ui->emojiHub, SLOT(showThis()));
+  // ADD BREEKS FORM
+  /// @bug This is not a normalized connection
+  connect(this, SIGNAL(sendBreekData(bool *, breeksData_t)), this, SLOT(recieveBreeksZoneData(bool *, breeksData_t)));
+  connect(ui->emojiHub, &EmojiHub::changeEmoji, ui->emojiButton, &DemoBreek::changeEmoji);
+  connect(ui->addBreekGB, &AddBreekGB::focusOut, ui->emojiHub, &EmojiHub::showThis);
   setStyleAddBreeksForm();
   ui->addBreekGB->hide();
 
-  //ADD TIMETABLE ELEMENT FORM
-  connect(this, SIGNAL(sendTimetableElementData(bool*, elementData_t)), this, SLOT(recieveTimeTableZoneData(bool*, elementData_t)));
+  // ADD TIMETABLE ELEMENT FORM
+  /// @bug This is not a normalized connection
+  connect(this, SIGNAL(sendTimetableElementData(bool *, elementData_t)), this,
+          SLOT(recieveTimeTableZoneData(bool *, elementData_t)));
   setStyleAddTimetableElementForm();
   ui->addTimetableElementGb->hide();
 
@@ -92,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
   //REGISTRATION
   ui->message->hide();
-  connect(server, SIGNAL(loginReply(bool)), this, SLOT(loginReply(bool)));
+  connect(server.get(), &Network::ServerConnection::loginReply, this, &MainWindow::loginReply);
   setShadow(ui->reg);
   setShadow(ui->login);
 
@@ -100,8 +98,7 @@ MainWindow::MainWindow(QWidget *parent) :
   ui->hideCalendar->hide();
 
   // connect for writing to refresh file
-  connect(server, SIGNAL(sendDataToRfrshFile(const QString&, const QString&)),
-        this, SLOT(writeToRfrshFile(const QString&, const QString&)));
+  connect(server.get(), &Network::ServerConnection::sendDataToRfrshFile, this, &MainWindow::writeToRfrshFile);
 
   // check if we can auto authorize the user
   checkSavedSession();
@@ -366,9 +363,9 @@ void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement,
                                           0, Qt::AlignCenter);
 
   arrBreeksZones_.push_back(newZone);
-  connect(server, SIGNAL(initBLidOnServer(long)), this, SLOT(setBLIdOnServer(long)));
-  connect(arrBreeksZones_[breeksZonesCount_].breekText, SIGNAL(textChanged()),
-          arrBreeksZones_[breeksZonesCount_].arrBreeksZoneDays[0], SLOT(sendPutRequestBl()));
+  connect(server.get(), &Network::ServerConnection::initBLidOnServer, this, &MainWindow::setBLIdOnServer);
+  connect(arrBreeksZones_[breeksZonesCount_].breekText, &QTextEdit::textChanged,
+          arrBreeksZones_[breeksZonesCount_].arrBreeksZoneDays[0], &DescriptionZoneDayButton::sendPutRequestBl);
 
   if (breeksZonesCount_ == 0) {
     bigWidgetHeight_ += 125;
@@ -425,40 +422,40 @@ void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement,
     }
 
     if (i / 2 < 5) {
-      connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], SIGNAL(doubleClicked()),
-              emojiHub, SLOT(showThis()));
+      connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], &Breek::doubleClicked, emojiHub,
+              &EmojiHub::showThis);
 
-      connect(emojiHub, SIGNAL(changeEmoji(int)),
-              arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], SLOT(changeEmoji(int)));
+      connect(emojiHub, &EmojiHub::changeEmoji, arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2],
+              &Breek::changeEmoji);
 
-      connect(emojiHub, SIGNAL(close()),
-              arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], SLOT(closeEmojiHub()));
+      connect(emojiHub, &EmojiHub::close, arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2],
+              &Breek::closeEmojiHub);
 
-      connect(emojiHub, SIGNAL(open()),
-              arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], SLOT(openEmojiHub()));
+      connect(emojiHub, &EmojiHub::open, arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], &Breek::openEmojiHub);
     }
     if (i / 2 + 1 == 5) {
-      connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1], SIGNAL(doubleClicked()),
-              emojiHub, SLOT(showThisSt()));
+      connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1], &Breek::doubleClicked, emojiHub,
+              &EmojiHub::showThisSt);
 
-      connect(emojiHub, SIGNAL(changeEmojiSt(int)),
-              arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1], SLOT(changeEmoji(int)));
+      connect(emojiHub, &EmojiHub::changeEmojiSt, arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1],
+              &Breek::changeEmoji);
 
-      connect(emojiHub, SIGNAL(closeSt()),
-              arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1], SLOT(closeEmojiHub()));
+      connect(emojiHub, &EmojiHub::closeSt, arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1],
+              &Breek::closeEmojiHub);
 
-      connect(emojiHub, SIGNAL(openSt()),
-              arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1], SLOT(openEmojiHub()));
+      connect(emojiHub, &EmojiHub::openSt, arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2 + 1],
+              &Breek::openEmojiHub);
     }
 
-    connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], SIGNAL(setZoneFocus(int, bool)),
-            this, SLOT(setBreeksDescriptionZoneFocus(int, bool)));
+    connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], &Breek::setZoneFocus, this,
+            &MainWindow::setBreeksDescriptionZoneFocus);
 
-    connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], SIGNAL(changeEmojiOnServer(int)),
-            this, SLOT(sendPutRequestBl(int)));
+    connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], &Breek::changeEmojiOnServer, this,
+            &MainWindow::sendPutRequestBl);
 
-    connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2], SIGNAL(sendPutRequest()),
-            arrBreeksZones_[breeksZonesCount_ - 1].arrBreeksZoneDays[0], SLOT(sendPutRequestBl()));
+    connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2],
+            &Breek::sendPutRequest,
+            arrBreeksZones_[breeksZonesCount_ - 1].arrBreeksZoneDays[0],
 
     i += 2;
   }
