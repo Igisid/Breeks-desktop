@@ -1,10 +1,10 @@
 #include "Front/mainwindow.h"
 
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
 
 bool MainWindow::openImageFromDisk(const QString &imageName) {
-  if ( QString::compare(imageName, QString()) != 0 ) {
+  if (QString::compare(imageName, QString()) != 0) {
     QImage image;
     bool valid = image.load(imageName);
 
@@ -12,18 +12,19 @@ bool MainWindow::openImageFromDisk(const QString &imageName) {
       QJsonObject json;
       json.insert(QStringLiteral("linkToImage"), imageName);
 
-      json.insert("date", QDateTime(arrDays_[0].date).toMSecsSinceEpoch());
+      QDateTime dt;
+      dt.setDate(arrDays_[0].date);
+      json.insert(QStringLiteral("date"), dt.toMSecsSinceEpoch());
 
       QUrl url = QUrl(Network::serverUrl + Network::addImageUrl);
       QJsonDocument jsonDoc(json);
 
-      server->sendPostRequestWithBearerToken(url , jsonDoc.toJson(), userData->getAccessToken());
+      server->sendPostRequestWithBearerToken(url, jsonDoc.toJson(), userData->getAccessToken());
 
       return true;
     }
-    else {
-      qDebug() << "CAN'T OPEN IMAGE";
-    }
+
+    qDebug() << "CAN'T OPEN IMAGE";
   }
   return false;
 }
@@ -40,7 +41,7 @@ void MainWindow::setImage(const QString &imageName) {
   }
 }
 
-//image like button
+// image like button
 void MainWindow::on_buttonImage_clicked() {
   setImageBackgroundView(true);
 
@@ -49,7 +50,7 @@ void MainWindow::on_buttonImage_clicked() {
 
   if (openImageFromDisk(newImageName)) {
     setImage(newImageName);
-    //writeDataToFileLastVisit();
+    // writeDataToFileLastVisit();
   }
 
   setImageBackgroundView(false);

@@ -1,12 +1,12 @@
 #include "infogb.h"
 
-InfoGB::InfoGB(QWidget *parent) :
-	QGroupBox(parent)
-{}
+#include <QEnterEvent>
+
+InfoGB::InfoGB(QWidget *parent) : QGroupBox(parent) {}
 
 void InfoGB::enterEvent(QEvent *event) {
   emit enter();
-  QWidget::enterEvent(event);
+  QWidget::enterEvent((QEnterEvent *)event);
 }
 
 void InfoGB::leaveEvent(QEvent *event) {

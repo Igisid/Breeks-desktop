@@ -1,12 +1,9 @@
 #ifndef INFOBUTTON_H
 #define INFOBUTTON_H
 
-#include <QObject>
-#include <QPushButton>
-#include <qgroupbox.h>
+#include <QGroupBox>
 
-class InfoGB : public QGroupBox
-{
+class InfoGB : public QGroupBox {
   Q_OBJECT
 
 public:

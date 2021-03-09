@@ -1,21 +1,15 @@
 #include "Back/secret-data.h"
 
 #include <QDebug>
+#include <utility>
 
-Network::UserData::UserData(QObject *parent) :
-  QObject(parent),
-  username_(""),
-  accessToken_(""),
-  refreshToken_("")
-{}
+Network::UserData::UserData(QObject *parent) : QObject(parent) {}
 
-Network::UserData::UserData(QString username, QString accessToken,
-                            QString refreshToken, QObject *parent) :
-  QObject(parent),
-  username_(username),
-  accessToken_(accessToken),
-  refreshToken_(refreshToken)
-{}
+Network::UserData::UserData(QString username, QString accessToken, QString refreshToken, QObject *parent)
+    : QObject(parent),
+      username_(std::move(username)),
+      accessToken_(std::move(accessToken)),
+      refreshToken_(std::move(refreshToken)) {}
 
 QString Network::UserData::getUsername() {
   return username_;
@@ -42,7 +36,7 @@ void Network::UserData::setRefreshToken(QString refreshToken) {
 }
 
 void Network::UserData::initSecretData(QString username, QString accessToken, QString refreshToken) {
-  this->username_ = username;
-  this->accessToken_ = accessToken;
-  this->refreshToken_ = refreshToken;
+  this->username_ = std::move(username);
+  this->accessToken_ = std::move(accessToken);
+  this->refreshToken_ = std::move(refreshToken);
 }

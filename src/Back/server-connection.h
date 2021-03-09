@@ -1,83 +1,80 @@
 #ifndef SERVERCONNECTION_H
 #define SERVERCONNECTION_H
 
-#include <QString>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QObject>
+#include <QString>
 
 #include "Back/secret-data.h"
 #include "Front/datastructures.h"
 
 namespace Network {
-  class ServerConnection: public QObject
-  {
-    Q_OBJECT
-  public:
-    ServerConnection(QObject *parent = nullptr);
+class ServerConnection : public QObject {
+  Q_OBJECT
+public:
+  ServerConnection(QObject *parent = nullptr);
   ServerConnection(std::shared_ptr<QNetworkAccessManager>, std::shared_ptr<Network::UserData>,
                    QObject *parent = nullptr);
 
-    Network::UserData * getUserData();
   std::shared_ptr<Network::UserData> getUserData();
 
-    QString resolveAccessTokenFromRequest();
-    QString resolveRefreshTokenFromRequest();
+  QString resolveAccessTokenFromRequest();
+  QString resolveRefreshTokenFromRequest();
 
-    // ====================================
-    //  Auth requests below:
-    // ====================================
-    void sendAuthRequest(const QString&, const QString&);
-    void sendPostRefreshRequest(const QString&, const QString&);
+  // ====================================
+  //  Auth requests below:
+  // ====================================
+  void sendAuthRequest(const QString &, const QString &);
+  void sendPostRefreshRequest(const QString &, const QString &);
 
-    // ====================================
-    //  POST data to server methods below:
-    // ====================================
-    void sendPostRequest(const QUrl&, const QByteArray&);
-    void sendPostRequestWithBearerToken(const QUrl&, const QByteArray&, const QString&); // !
+  // ====================================
+  //  POST data to server methods below:
+  // ====================================
+  void sendPostRequest(const QUrl &, const QByteArray &);
+  void sendPostRequestWithBearerToken(const QUrl &, const QByteArray &, const QString &); // !
 
-    // ====================================
-    //  PUT data to server methods below:
-    // ====================================
-    void sendPutRequestWithBearerToken(const QUrl&, const QByteArray&, const QString&); // !
+  // ====================================
+  //  PUT data to server methods below:
+  // ====================================
+  void sendPutRequestWithBearerToken(const QUrl &, const QByteArray &, const QString &); // !
 
-    // ====================================
-    //  DELETE data from server methods below:
-    // ====================================
-    void sendDeleteRequestWithBearerToken(const QUrl&, const QString&); // !
+  // ====================================
+  //  DELETE data from server methods below:
+  // ====================================
+  void sendDeleteRequestWithBearerToken(const QUrl &, const QString &); // !
 
-    // ====================================
-    //  GET data from server methods below:
-    // ====================================    
-    void sendGetRequestWithBearerToken(const QUrl&, const QString&); // !
+  // ====================================
+  //  GET data from server methods below:
+  // ====================================
+  void sendGetRequestWithBearerToken(const QUrl &, const QString &); // !
 
-  private:
+private:
   std::shared_ptr<QNetworkAccessManager> networkAccessManager_;
   std::shared_ptr<UserData> userData_;
   QList<lastRequest_t> listOfLastRequests_;
   std::mutex mutex_;
 
-  public slots:
-    void onfinish(QNetworkReply *);
+public slots:
+  void onfinish(QNetworkReply *);
 
-  signals:
-    void initSecretData(QString, QString, QString);
-    void initTEidOnServer(long);
-    void initBLidOnServer(long);
-    void loginReply(bool);
-    void sendBreeksLinesToGUI(const QList<breeksData_t>&);
-    void sendTTElementsToGUI(const QList<elementData_t>&);
-    void sendNoteToGUI(note_t&);
-    void sendImageToGUI(const image_t&);
+signals:
+  void initSecretData(QString, QString, QString);
+  void initTEidOnServer(long);
+  void initBLidOnServer(long);
+  void loginReply(bool);
+  void sendBreeksLinesToGUI(const QList<breeksData_t> &);
+  void sendTTElementsToGUI(const QList<elementData_t> &);
+  void sendNoteToGUI(note_t &);
+  void sendImageToGUI(const image_t &);
 
-    // this signal is emitted whenever we want to (re-)load all data of the week
-    void initWeekData(const QString&);
+  // this signal is emitted whenever we want to (re-)load all data of the week
+  void initWeekData(const QString &);
 
-    void logout();
+  void logout();
 
-    void sendDataToRfrshFile(const QString&, const QString&);
-  };
-
+  void sendDataToRfrshFile(const QString &, const QString &);
+};
 
 // ===================
 //  API Properties

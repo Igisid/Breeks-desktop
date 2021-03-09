@@ -1,23 +1,22 @@
 #ifndef FILESYSTEM_H
 #define FILESYSTEM_H
 
-#include <QWidget>
-#include <QTextEdit>
-#include <QGridLayout>
-#include <Qt>
-#include <QKeyEvent>
+#include <QByteArray>
 #include <QFile>
+#include <QGridLayout>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
-#include <QByteArray>
+#include <QKeyEvent>
+#include <QTextEdit>
+#include <QWidget>
+#include <Qt>
 #include <QtSql>
 
 #include "Front/datastructures.h"
 
-class filesystem
-{
+class filesystem {
 public:
   filesystem();
   static QJsonObject readTextEdidFromDB(const int currentFile);
@@ -27,7 +26,7 @@ public:
   static void writeTimeTableToDB(QJsonArray &JDayElements, const int index);
 
 private:
-  static QString getDataFromDB(QString queryStr);
+  static QString getDataFromDB(const QString &queryStr);
 
   static void pushDataToDBTextEdit(QJsonDocument &jDoc, QJsonObject &jObject, QJsonObject &notes, QJsonObject &note,
                                    textInfo_t &info, const int currentFile);
@@ -37,12 +36,12 @@ private:
   static void parseDataBaseTextEdit(QJsonObject &notes);
   static void parseDataBaseTimeTable(QJsonObject &timeTable);
 
-  static QJsonObject note1_;
-  static QJsonObject note2_;
-  static QJsonObject note3_;
-  static QJsonObject note4_;
-  static QJsonObject note5_;
-  static QJsonObject note6_;
+  //  static QJsonObject note1_;
+  //  static QJsonObject note2_;
+  //  static QJsonObject note3_;
+  //  static QJsonObject note4_;
+  //  static QJsonObject note5_;
+  //  static QJsonObject note6_;
 };
 
 #endif // FILESYSTEM_H

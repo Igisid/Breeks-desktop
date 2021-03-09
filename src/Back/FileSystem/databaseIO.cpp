@@ -16,7 +16,7 @@ void MainWindow::setStatesFromFileLastVisit() {
   noteChangePage(nLastNotePage);
 
   QString imageName = defaultImageName_;
-  QString sTmp = "";
+  QString sTmp = QLatin1String("");
   stream >> sTmp;
   if (QString::compare(sTmp, defaultImageName_) != 0) {
     if (openImageFromDisk(sTmp)) {

@@ -1,16 +1,16 @@
 #ifndef DATASTRUCTURES_H
 #define DATASTRUCTURES_H
 
-#include <QString>
-#include <QPalette>
+#include <QByteArray>
 #include <QFile>
 #include <QJsonArray>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
-#include <QByteArray>
-#include <QtSql>
+#include <QPalette>
+#include <QString>
 #include <QTimeEdit>
+#include <QtSql>
 
 struct lastRequest_t {
   QUrl url;
@@ -30,14 +30,14 @@ struct charStyle_t {
 };
 
 namespace colors { //#ade9ff is breeks color
-  const QString nocolor = "";
-  const QString green = "#bfffb5";
-  const QString lavender = "#dcbeee";
-  const QString marina = "#bcd9ef";
-  const QString orange = "#ffc88e";
-  const QString red = "#ff9d95";
-  const QString white = "#ffffff";
-};
+const QString nocolor = QLatin1String("");
+const QString green = QStringLiteral("#bfffb5");
+const QString lavender = QStringLiteral("#dcbeee");
+const QString marina = QStringLiteral("#bcd9ef");
+const QString orange = QStringLiteral("#ffc88e");
+const QString red = QStringLiteral("#ff9d95");
+const QString white = QStringLiteral("#ffffff");
+} // namespace colors
 
 struct elementData_t {
   long idOnServer;
@@ -66,10 +66,10 @@ struct tagElement_t {
 };
 
 namespace tag {
-  const int N_COLORS = 6;
-  const QString ARR_COLORS[6] = {"#ffa542", "#FF6666", "#81c4ff", "#cAcAcA", "#A9D750", "#CC66FF"};
-  const QString ARR_LIGHT_COLORS[6] = {"#ffc382", "#ff9d96", "#c5e1ff", "#cAcAcA", "#c9e48d", "#eab5ff"};
-}
+const int N_COLORS = 6;
+const QString ARR_COLORS[6] = {"#ffa542", "#FF6666", "#81c4ff", "#cAcAcA", "#A9D750", "#CC66FF"};
+const QString ARR_LIGHT_COLORS[6] = {"#ffc382", "#ff9d96", "#c5e1ff", "#cAcAcA", "#c9e48d", "#eab5ff"};
+} // namespace tag
 
 struct textInfo_t {
   QJsonArray jArr;
@@ -88,18 +88,8 @@ struct image_t {
   qint64 date;
 };
 
-enum Directions {
-  DOWNSIDE,
-  UPSIDE
-};
+enum Directions { DOWNSIDE, UPSIDE };
 
-enum Conditions {
-  RED,
-  GREY_FOREGROUND,
-  GREY_BACKGROUND,
-  GREEN,
-  YELLOW,
-  SHADOW
-};
+enum Conditions { RED, GREY_FOREGROUND, GREY_BACKGROUND, GREEN, YELLOW, SHADOW };
 
 #endif // DATASTRUCTURES_H

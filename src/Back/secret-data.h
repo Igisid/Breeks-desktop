@@ -5,30 +5,29 @@
 #include <QString>
 
 namespace Network {
-  class UserData : public QObject
-  {
-    Q_OBJECT
-  public:
-    UserData(QObject *parent = nullptr);
-    UserData(QString, QString, QString, QObject *parent = nullptr);
+class UserData : public QObject {
+  Q_OBJECT
+public:
+  UserData(QObject *parent = nullptr);
+  UserData(QString, QString, QString, QObject *parent = nullptr);
 
-    QString getUsername();
-    void setUsername(QString);
+  QString getUsername();
+  void setUsername(QString);
 
-    QString getAccessToken();
-    void setAccessToken(QString);
+  QString getAccessToken();
+  void setAccessToken(QString);
 
-    QString getRefreshToken();
-    void setRefreshToken(QString);
+  QString getRefreshToken();
+  void setRefreshToken(QString);
 
-  public slots:
-    void initSecretData(QString, QString, QString);
+public slots:
+  void initSecretData(QString, QString, QString);
 
-  private:
-    QString username_;
-    QString accessToken_;
-    QString refreshToken_;
-  };
-}
+private:
+  QString username_;
+  QString accessToken_;
+  QString refreshToken_;
+};
+} // namespace Network
 
 #endif // SECRETDATA_H

@@ -8,8 +8,7 @@
 
 #include "Front/datastructures.h"
 
-class Breek : public QPushButton
-{
+class Breek : public QPushButton {
   Q_OBJECT
 
 public:
@@ -23,7 +22,7 @@ public:
   void focusInEvent(QFocusEvent *) override;
   void focusOutEvent(QFocusEvent *) override;
 
-  bool getState();
+  bool getState() const;
   void setState(bool state);
 
   Conditions getColorState();
@@ -31,11 +30,10 @@ public:
 
   void connectToQml(int indexOfEmoji, Conditions cond);
   void connectToQml(Conditions cond, bool = false);
-  void connectToQml(int indexOfEmoji, Directions dir,
-                    Conditions from, Conditions to);
+  void connectToQml(int indexOfEmoji, Directions dir, Conditions from, Conditions to);
 
   void setEmoj(int);
-  int getEmojiNum();
+  int getEmojiNum() const;
   void setIndex(const int zoneIndex, const int dayIndex);
 
   int getWidth();

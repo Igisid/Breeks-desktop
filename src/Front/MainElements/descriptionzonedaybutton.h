@@ -3,14 +3,13 @@
 
 #include <QPushButton>
 
-class DescriptionZoneDayButton : public QPushButton
-{
+class DescriptionZoneDayButton : public QPushButton {
   Q_OBJECT
 
 public:
   DescriptionZoneDayButton(int, int);
   void mousePressEvent(QMouseEvent *event) override;
-  int getZoneIndex();
+  int getZoneIndex() const;
   void setZoneIndex(int);
 
 public slots:

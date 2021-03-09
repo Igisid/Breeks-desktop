@@ -1,18 +1,17 @@
 #ifndef BUTTON_H
 #define BUTTON_H
 
-#include <QPushButton>
 #include <QGraphicsDropShadowEffect>
+#include <QPushButton>
 
-class ImageHover : public QPushButton
-{
+class ImageHover : public QPushButton {
   Q_OBJECT
 
 public:
   ImageHover(QWidget *parent = nullptr);
 
   void enterEvent(QEvent *event);
-  void leaveEvent(QEvent *event);
+  void leaveEvent(QEvent *event) override;
 
 private:
   QGraphicsDropShadowEffect *m_shadowEffect;

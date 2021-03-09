@@ -1,8 +1,6 @@
 #include "emojibutton.h"
 
-EmojiButton::EmojiButton(const int num) :
-  num_(num)
-{
+EmojiButton::EmojiButton(const int num, QObject * /*object*/) : num_(num) {
   this->setStyleSheet("border-image: url(:/Images/Front/Images/Breeks/" + QString::number(num_) + ".png)");
 }
 

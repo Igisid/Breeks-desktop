@@ -260,18 +260,18 @@ Item
         }
 
         // работа с тенью
-        layer.enabled: true
-        layer.effect: DropShadow
-        {
-            anchors.fill: conditionFrom
-            radius: 12.0
-            samples: 33
-            spread: 0
-            color: getColorForShadow()
-            transparentBorder: true
-            //horizontalOffset: getCondShadeOffset(condRectWidth)
-            //verticalOffset: getCondShadeOffset(condRectHeight)
-        }
+//        layer.enabled: true
+//        layer.effect: DropShadow
+//        {
+//            anchors.fill: conditionFrom
+//            radius: 12.0
+//            samples: 33
+//            spread: 0
+//            color: getColorForShadow()
+//            transparentBorder: true
+//            //horizontalOffset: getCondShadeOffset(condRectWidth)
+//            //verticalOffset: getCondShadeOffset(condRectHeight)
+//        }
     }
     Rectangle
     {

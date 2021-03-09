@@ -1,14 +1,13 @@
 #ifndef DAYWIDGET_H
 #define DAYWIDGET_H
 
-#include <QWidget>
 #include <QDrag>
 #include <QDragEnterEvent>
+#include <QWidget>
 
 #include "Front/datastructures.h"
 
-class DayWidget : public QWidget
-{
+class DayWidget : public QWidget {
   Q_OBJECT
 
 public:
@@ -19,7 +18,7 @@ public:
   void dropEvent(QDropEvent *event);
   void dragMoveEvent(QDragMoveEvent *event);
 
-  int getDayNumber();
+  int getDayNumber() const;
   void setDayNumber(const int);
 
 private:

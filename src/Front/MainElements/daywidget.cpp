@@ -1,23 +1,22 @@
 #include "daywidget.h"
 
-DayWidget::DayWidget(QWidget *parent) : QWidget(parent)
-{
+DayWidget::DayWidget(QWidget *parent) : QWidget(parent) {
   setAcceptDrops(true);
 }
 
 void DayWidget::dragEnterEvent(QDragEnterEvent *event) {
   event->acceptProposedAction();
-  elementEnterArea(dayNumber_);
-  //this->setStyleSheet("border: 2px solid #111111; border-radius: 9px;");
+  emit elementEnterArea(dayNumber_);
+  // this->setStyleSheet("border: 2px solid #111111; border-radius: 9px;");
 }
 
 void DayWidget::dragLeaveEvent(QDragLeaveEvent *event) {
-  elementLeaveArea(dayNumber_);
-  //this->setStyleSheet("border-radius: 9px;");
+  emit elementLeaveArea(dayNumber_);
+  // this->setStyleSheet("border-radius: 9px;");
 }
 
 void DayWidget::dropEvent(QDropEvent *event) {
-//  emit dropNoChanges();
+  //  emit dropNoChanges();
 
   elementData_t elemData;
   QByteArray data = event->mimeData()->data(QStringLiteral("elemData"));
@@ -56,7 +55,7 @@ void DayWidget::dragMoveEvent(QDragMoveEvent *event) {
   emit moveElement();
 }
 
-int DayWidget::getDayNumber() {
+int DayWidget::getDayNumber() const {
   return dayNumber_;
 }
 

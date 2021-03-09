@@ -1,34 +1,34 @@
 #include "mainwindow.h"
 
-#include <QScrollArea>
-#include <QPointer>
-#include <memory>
-#include <QScrollBar>
-#include <QtConcurrent/QtConcurrent>
+#include <QDebug>
 #include <QDesktopServices>
 #include <QMessageBox>
+#include <QPointer>
+#include <QScrollArea>
+#include <QScrollBar>
 #include <QThread>
-#include <QDebug>
+#include <QtConcurrent/QtConcurrent>
 
+#include <memory>
+
+#include "Front/GeneralTextEdit/gentextedit.h"
 #include "Front/MainElements/EmojiHub/emojihub.h"
 #include "Front/MainElements/elementtemplate.h"
-#include "Front/GeneralTextEdit/gentextedit.h"
 #include "Front/datastructures.h"
 
 #include "Back/secret-data.h"
 #include "Back/server-connection.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-  QMainWindow(parent),
-  ui(new Ui::MainWindow),
-  fileLastVisit_(fileLastVisitName_),
-  fileMon_(fileMonName_),
-  fileTue_(fileTueName_),
-  fileWed_(fileWedName_),
-  fileThu_(fileThuName_),
-  fileFri_(fileFriName_),
-  fileSat_(fileSatName_)
-{
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent),
+      ui(new Ui::MainWindow),
+      fileLastVisit_(fileLastVisitName_),
+      fileMon_(fileMonName_),
+      fileTue_(fileTueName_),
+      fileWed_(fileWedName_),
+      fileThu_(fileThuName_),
+      fileFri_(fileFriName_),
+      fileSat_(fileSatName_) {
   ui->setupUi(this);
 
   this->showMaximized();
@@ -57,7 +57,6 @@ MainWindow::MainWindow(QWidget *parent) :
   connect(ui->buttonImage, &ImageHover::imageEnter, this, &MainWindow::setImageBackgroundView);
   connect(ui->buttonImage, &ImageHover::imageLeave, this, &MainWindow::setImageBackgroundView);
 
-  timetableElementsCount_ = 0;
   setWorkZone();
 
   setAllElementsEffects();
@@ -80,7 +79,7 @@ MainWindow::MainWindow(QWidget *parent) :
   setStyleAddTimetableElementForm();
   ui->addTimetableElementGb->hide();
 
-  //INFO BUTTONS
+  // INFO BUTTONS
   setInfoButtonsStyle();
   QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
   effect->setBlurRadius(5);
@@ -89,7 +88,7 @@ MainWindow::MainWindow(QWidget *parent) :
   effect->setColor("#909090");
   ui->infoButton->setGraphicsEffect(effect);
 
-  //REGISTRATION
+  // REGISTRATION
   ui->message->hide();
   connect(server.get(), &Network::ServerConnection::loginReply, this, &MainWindow::loginReply);
   setShadow(ui->reg);
@@ -118,7 +117,7 @@ void MainWindow::logout() {
   writeToRfrshFile(QLatin1String(""), QLatin1String(""));
 }
 
-void MainWindow::writeToRfrshFile(const QString & refresh, const QString & email) {
+void MainWindow::writeToRfrshFile(const QString &refresh, const QString &email) {
   QJsonObject json;
   json.insert(QStringLiteral("refresh"), refresh);
   json.insert(QStringLiteral("email"), email);
@@ -135,7 +134,7 @@ void MainWindow::writeToRfrshFile(const QString & refresh, const QString & email
   refreshFile.write(jsonData);
 }
 
-QJsonObject * MainWindow::openRefreshFile() {
+QJsonObject *MainWindow::openRefreshFile() {
   QFile refreshFile(QDir::current().path() + rfrshPath_);
 
   if (!refreshFile.open(QIODevice::ReadOnly)) {
@@ -150,7 +149,7 @@ QJsonObject * MainWindow::openRefreshFile() {
 }
 
 void MainWindow::checkSavedSession() {
-  QJsonObject * jsonRfrsh = openRefreshFile();
+  QJsonObject *jsonRfrsh = openRefreshFile();
   if (jsonRfrsh != nullptr) {
     QString refreshToken = jsonRfrsh->value(QStringLiteral("refresh")).toString();
     QString email = jsonRfrsh->value(QStringLiteral("email")).toString();
@@ -159,44 +158,47 @@ void MainWindow::checkSavedSession() {
       if (!email.isEmpty()) {
         ui->mail->setText(email);
       }
-    }
-    else {
+    } else {
       // send refresh-request
       if (!email.isEmpty()) {
         ui->mail->setText(email);
         server->sendPostRefreshRequest(email, refreshToken);
-      }
-      else {
+      } else {
         qDebug() << "Error. There's a refresh but no email.";
       }
     }
   }
 }
 
-void MainWindow::clearAndInitWeekData(const QString & token) {
+void MainWindow::clearAndInitWeekData(const QString &token) {
   clearWeekData();
   initWeekData(token);
 }
 
-void MainWindow::initWeekData(const QString & token) {
-  QString sDateFirstDayWeek = "";
-  sDateFirstDayWeek.setNum(QDateTime(arrDays_[0].date).toMSecsSinceEpoch());
+void MainWindow::initWeekData(const QString &token) {
+  QString sDateFirstDayWeek;
+  QDateTime dt;
+  dt.setDate(arrDays_[0].date);
+  sDateFirstDayWeek.setNum(dt.toMSecsSinceEpoch());
 
   // get breeks lines
   QUrl url(Network::serverUrl + Network::getAllLinesInWeekUrl + sDateFirstDayWeek);
   server->sendGetRequestWithBearerToken(url, token);
 
   // get TTElements
-  for (auto day : arrDays_) {
-    QString sDate = "";
-    sDate.setNum(QDateTime(day.date).toMSecsSinceEpoch());
+  for (const auto &day : arrDays_) {
+    QString sDate;
+    QDateTime dt;
+    dt.setDate(day.date);
+    sDate.setNum(dt.toMSecsSinceEpoch());
 
     url = Network::serverUrl + Network::getTTElementsForDayUrl + sDate;
     server->sendGetRequestWithBearerToken(url, token);
   }
 
   // get notes
-  url = Network::serverUrl + Network::getNoteByDateAndPageUrl + sDateFirstDayWeek + "/" + QString::number(ui->note->getNumberCurrentFile());
+  url = Network::serverUrl + Network::getNoteByDateAndPageUrl + sDateFirstDayWeek + "/" +
+        QString::number(ui->note->getNumberCurrentFile());
   server->sendGetRequestWithBearerToken(url, token);
 
   // get image location
@@ -204,8 +206,8 @@ void MainWindow::initWeekData(const QString & token) {
   server->sendGetRequestWithBearerToken(url, token);
 }
 
-void MainWindow::initBreeksLines(const QList<breeksData_t> & listOfLines) {
-  for (auto breeksLine : listOfLines) {
+void MainWindow::initBreeksLines(const QList<breeksData_t> &listOfLines) {
+  for (const auto &breeksLine : listOfLines) {
     bool arrConditions[6] = {false};
     QString sConditions = QStringLiteral("000000").number(breeksLine.conditions, 2);
     while (sConditions.length() != 6) {
@@ -229,8 +231,8 @@ void MainWindow::initBreeksLines(const QList<breeksData_t> & listOfLines) {
   }
 }
 
-void MainWindow::initTTElements(const QList<elementData_t> & listOfTTElements) {
-  for (auto element : listOfTTElements) {
+void MainWindow::initTTElements(const QList<elementData_t> &listOfTTElements) {
+  for (const auto &element : listOfTTElements) {
     bool arr[6] = {false};
     QDateTime date = QDateTime();
     date.setMSecsSinceEpoch(element.date);
@@ -242,17 +244,15 @@ void MainWindow::initTTElements(const QList<elementData_t> & listOfTTElements) {
   }
 }
 
-void MainWindow::initNote(note_t & note) {
+void MainWindow::initNote(note_t &note) {
   ui->note->fillCharsAndSetTextt(note.text, note.charStyleVector);
 }
 
-void MainWindow::initImage(const image_t & image) {
+void MainWindow::initImage(const image_t &image) {
   setImage(image.imageLocation);
 }
 
-void MainWindow::mousePressEvent(QMouseEvent *event) {
-
-}
+void MainWindow::mousePressEvent(QMouseEvent * /*event*/) {}
 
 void MainWindow::moveTimetableElement() {
   while (isElementDrag_) {
@@ -260,13 +260,12 @@ void MainWindow::moveTimetableElement() {
 
     int posMain = this->mapToGlobal(ui->groupBoxWorkZone->pos()).x();
 
-    if (pos.x() > posMain & pos.x() < posMain + 700) {
+    if (pos.x() > posMain && pos.x() < posMain + 700) {
       QPoint pos1 = bigWidgetInWorkZone_->mapFromGlobal(this->cursor().pos());
       workZoneScrollArea_->ensureVisible(pos1.x() - 1, workZoneScrollArea_->verticalScrollBar()->sliderPosition());
       QThread::msleep(2);
-    }
-    else if (pos.x() > posMain + ui->groupBoxWorkZone->width() - 700 &
-             pos.x() < posMain + ui->groupBoxWorkZone->width()) {
+    } else if (pos.x() > posMain + ui->groupBoxWorkZone->width() - 700 &&
+               pos.x() < posMain + ui->groupBoxWorkZone->width()) {
       QPoint pos1 = bigWidgetInWorkZone_->mapFromGlobal(this->cursor().pos());
       workZoneScrollArea_->ensureVisible(pos1.x() + 1, workZoneScrollArea_->verticalScrollBar()->sliderPosition());
       QThread::msleep(2);
@@ -276,29 +275,38 @@ void MainWindow::moveTimetableElement() {
 
 void MainWindow::mousePressedByDragElement() {
   isElementDrag_ = true;
+
+#if QT_VERSION >= 0x060000
+  auto future = QtConcurrent::task([this]() {
+    moveTimetableElement();
+  });
+#else
   QFuture<void> future = QtConcurrent::run(this, &MainWindow::moveTimetableElement);
+#endif
+
+  Q_UNUSED(future)
 }
 
 void MainWindow::dropNoChanges() {
   isElementDrag_ = false;
 }
 
-void MainWindow::recieveTimeTableZoneData(bool *daysCheck, elementData_t newElement, bool withRequest) {
+void MainWindow::recieveTimeTableZoneData(bool *daysCheck, const elementData_t &newElement, bool withRequest) {
   for (int i = 0; i < 6; i++) {
     if (daysCheck[i] == true) {
-      //add new element data to array
+      // add new element data to array
       const int newElementIndex = addNewElementToArray(newElement, i, withRequest);
 
-      //increase scroll area of this day
+      // increase scroll area of this day
       if (arrDays_[i].elementsCount < 3) {
-        //arrDays_[i].widgetDay->setFixedSize(DAY_WIDTH_, arrDays_[i].groupBoxElementsHeight - 30);
-      }
-      else {
+        // arrDays_[i].widgetDay->setFixedSize(DAY_WIDTH_,
+        // arrDays_[i].groupBoxElementsHeight - 30);
+      } else {
         arrDays_[i].groupBoxElementsHeight = ELEMENT_HEIGHT_ * (arrDays_[i].elementsCount + 1) + 25;
         arrDays_[i].widgetDay->setFixedHeight(arrDays_[i].groupBoxElementsHeight);
       }
 
-      //add new element to layout
+      // add new element to layout
       addNewElementToLayout(i, newElementIndex);
 
       arrDays_[i].elementsScaledCount = 0;
@@ -309,12 +317,12 @@ void MainWindow::recieveTimeTableZoneData(bool *daysCheck, elementData_t newElem
   }
 }
 
-void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement, int * states) {
-  //if we arleady have breeks zone with this name
-  for (breeksZone_t &value : arrBreeksZones_) { //value == zone
+void MainWindow::recieveBreeksZoneData(bool *daysCheck, const breeksData_t &newElement, int *states) {
+  // if we arleady have breeks zone with this name
+  for (breeksZone_t &value : arrBreeksZones_) { // value == zone
     if (value.breekText->toPlainText() == newElement.text) {
       for (int i = 0; i < DAYS_COUNT; i++) {
-        Breek * breek = value.arrBreeks[i];
+        Breek *breek = value.arrBreeks[i];
         if (breek->getEmojiNum() != newElement.arrNEmoji[i]) {
           breek->setEmoj(newElement.arrNEmoji[i]);
           breek->changeBreekState();
@@ -323,45 +331,44 @@ void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement,
           if (daysCheck[i] == true && breek->getState() == false) {
             breek->changeBreekState();
           }
-        }
-        else {
+        } else {
           if (daysCheck[i] == true && breek->getState() == false) {
             breek->changeBreekState();
           }
         }
       }
 
-      if (iCurrentDay_ < DAYS_COUNT & value.arrBreeks[iCurrentDay_]->getState()) {
-        value.arrBreeksZoneDays[iCurrentDay_]->setStyleSheet("background: #b3defc; border-radius: 4px;");
+      if (iCurrentDay_ < DAYS_COUNT && value.arrBreeks[iCurrentDay_]->getState()) {
+        value.arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(
+            QStringLiteral("background: #b3defc; border-radius: 4px;"));
       }
 
       return;
     }
   }
 
-  //if we don't have breeks zone with this name
+  // if we don't have breeks zone with this name
   breeksZone_t newZone;
   newZone.zoneIndex = breeksZonesCount_;
   allocateMemoryForBreeks(&newZone); // breeks constructor call here (6 constructors)
-  setBreeksZone(&newZone); // make invisible and connect move event
-  setDaysConnect(&newZone); // arrBreeksZoneDays[6] connect clicked() with breeks->changeBreekState
+  setBreeksZone(&newZone);           // make invisible and connect move event
+  setDaysConnect(&newZone);          // arrBreeksZoneDays[6] connect clicked() with
+                                     // breeks->changeBreekState
 
-  //newZone.breekText->setFocus();
+  // newZone.breekText->setFocus();
   newZone.idOnServer = newElement.idOnServer;
   newZone.breekText->fillCharsAndSetText(newElement.text, newElement.charStyleVector);
   newZone.breekText->moveCursor(QTextCursor::Start);
   newZone.breekText->verticalScrollBar()->minimum();
 
-  if (iCurrentDay_ < DAYS_COUNT & newZone.arrBreeks[iCurrentDay_]->getState()) {
-    newZone.arrBreeksZoneDays[iCurrentDay_]->setStyleSheet("background: #b3defc; border-radius: 4px;");
+  if (iCurrentDay_ < DAYS_COUNT && newZone.arrBreeks[iCurrentDay_]->getState()) {
+    newZone.arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(QStringLiteral("background: #b3defc; border-radius: 4px;"));
   }
 
-  workZoneLayout_->addWidget(newZone.breeksZoneGroupBox, workZoneLayout_->rowCount() + 1,
-                             0, 1, 6, Qt::AlignCenter);
+  workZoneLayout_->addWidget(newZone.breeksZoneGroupBox, workZoneLayout_->rowCount() + 1, 0, 1, 6, Qt::AlignCenter);
 
   breeksDescriptionZoneLayout_->addWidget(newZone.breeksDescriptionGroupBox,
-                                          breeksDescriptionZoneLayout_->rowCount() + 1,
-                                          0, Qt::AlignCenter);
+                                          breeksDescriptionZoneLayout_->rowCount() + 1, 0, Qt::AlignCenter);
 
   arrBreeksZones_.push_back(newZone);
   connect(server.get(), &Network::ServerConnection::initBLidOnServer, this, &MainWindow::setBLIdOnServer);
@@ -370,8 +377,7 @@ void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement,
 
   if (breeksZonesCount_ == 0) {
     bigWidgetHeight_ += 125;
-  }
-  else {
+  } else {
     bigWidgetHeight_ += 125;
   }
 
@@ -380,14 +386,14 @@ void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement,
 
   ++breeksZonesCount_;
 
-  //ADD BREEKS
+  // ADD BREEKS
 
   int i = 0;
   while (i < 11) {
     // breeks added to layout here
     arrBreeksZones_[breeksZonesCount_ - 1].breeksZoneLayout->addWidget(newZone.arrBreeks[i / 2], 1, i);
 
-    //emojiHub
+    // emojiHub
     EmojiHub *emojiHub = new EmojiHub;
     if (i != 10) {
       arrBreeksZones_[breeksZonesCount_ - 1].breeksZoneLayout->addWidget(emojiHub, 1, i + 1, Qt::AlignCenter);
@@ -408,17 +414,17 @@ void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement,
                                                                               Conditions(states[i / 2]));
         int iState = 0;
         switch (states[i / 2]) {
-          case 0 :
-            iState = 2;
-            break;
-          case 1 :
-            iState = 0;
-            break;
-          case 3 :
-            iState = 1;
-            break;
+        case 0:
+          iState = 2;
+          break;
+        case 1:
+          iState = 0;
+          break;
+        case 3:
+          iState = 1;
+          break;
         }
-        changeBreeksZoneLilDayState(breeksZonesCount_ - 1, i/2, iState, false);
+        changeBreeksZoneLilDayState(breeksZonesCount_ - 1, i / 2, iState, false);
       }
     }
 
@@ -457,15 +463,16 @@ void MainWindow::recieveBreeksZoneData(bool *daysCheck, breeksData_t newElement,
     connect(arrBreeksZones_[breeksZonesCount_ - 1].arrBreeks[i / 2],
             &Breek::sendPutRequest,
             arrBreeksZones_[breeksZonesCount_ - 1].arrBreeksZoneDays[0],
+            &DescriptionZoneDayButton::sendPutRequestBl);
 
     i += 2;
   }
 }
 
 void MainWindow::recieveDayAndElementIndex(const int dayElementIndex, const int elementIndex, bool isDeleting) {
-  //SERVER REQUEST
+  // SERVER REQUEST
   if (isDeleting) {
-    QUrl url = QUrl(Network::serverUrl + Network::deleteTTElementUrl+ '/' +
+    QUrl url = QUrl(Network::serverUrl + Network::deleteTTElementUrl + '/' +
                     QString::number(arrDaysData_[dayElementIndex][elementIndex].idOnServer));
 
     server->sendDeleteRequestWithBearerToken(url, userData->getAccessToken());
@@ -489,45 +496,37 @@ void MainWindow::recieveDayAndElementIndex(const int dayElementIndex, const int 
     --arrDays_[dayElementIndex].elementsCount;
     --timetableElementsCount_;
 
-    if (arrDays_[dayElementIndex].elementsCount <= 3 & arrDays_[dayElementIndex].elementsScaledCount < 3) {
+    if (arrDays_[dayElementIndex].elementsCount <= 3 && arrDays_[dayElementIndex].elementsScaledCount < 3) {
       arrDays_[dayElementIndex].groupBoxElementsHeight = 370;
-    }
-    else {
+    } else {
       arrDays_[dayElementIndex].groupBoxElementsHeight =
-        ELEMENT_HEIGHT_ *
-        (arrDays_[dayElementIndex].elementsCount - arrDays_[dayElementIndex].elementsScaledCount) +
-        (ELEMENT_HEIGHT_ + 30) * arrDays_[dayElementIndex].elementsScaledCount + 25;
-      //arrDays_[dayElementIndex].groupBoxElementsHeight =
-        //ELEMENT_HEIGHT_ * arrDays_[dayElementIndex].elementsCount + 25;
+          ELEMENT_HEIGHT_ * (arrDays_[dayElementIndex].elementsCount - arrDays_[dayElementIndex].elementsScaledCount) +
+          (ELEMENT_HEIGHT_ + 30) * arrDays_[dayElementIndex].elementsScaledCount + 25;
+      // arrDays_[dayElementIndex].groupBoxElementsHeight =
+      // ELEMENT_HEIGHT_ * arrDays_[dayElementIndex].elementsCount + 25;
     }
     arrDays_[dayElementIndex].widgetDay->setFixedHeight(arrDays_[dayElementIndex].groupBoxElementsHeight);
 
     if (arrDays_[dayElementIndex].elementsCount == 0) {
-      arrDays_[dayElementIndex].labelElementsCount->setText("");
-    }
-    else {
-      arrDays_[dayElementIndex].labelElementsCount->setText(
-        QString::number(arrDays_[dayElementIndex].elementsCount)
-      );
+      arrDays_[dayElementIndex].labelElementsCount->setText(QLatin1String(""));
+    } else {
+      arrDays_[dayElementIndex].labelElementsCount->setText(QString::number(arrDays_[dayElementIndex].elementsCount));
     }
 
     iterType start = arrDaysData_[dayElementIndex].begin();
     arrDaysData_[dayElementIndex].erase(start + elementIndex);
 
     for (int i = elementIndex; i < arrDays_[dayElementIndex].elementsCount; ++i) {
-      ElementTemplate *a = qobject_cast<ElementTemplate*>(
-        arrDays_[dayElementIndex].layoutDayElements->itemAt(i)->widget()
-      );
+      ElementTemplate *a =
+          qobject_cast<ElementTemplate *>(arrDays_[dayElementIndex].layoutDayElements->itemAt(i)->widget());
       a->setElementIndex(i);
     }
-  }
-  else {
+  } else {
     item->widget()->show();
   }
 }
 
-void MainWindow::recieveDayAndElementIndexAndTagColor(const int dayIndex, const int elementIndex,
-                                                      const int colorNum) {
+void MainWindow::recieveDayAndElementIndexAndTagColor(const int dayIndex, const int elementIndex, const int colorNum) {
   arrDaysData_[dayIndex][elementIndex].tagColorNum = colorNum;
 }
 
@@ -535,21 +534,20 @@ void MainWindow::recieveUsername() {
   this->showMaximized();
 }
 
-void MainWindow::recieveMimeData(const elementData_t data, const QPixmap pixMap) {
+void MainWindow::recieveMimeData(const elementData_t &data, const QPixmap &pixMap) {
   mimeData_.setText(data.text);
   dragElement_ = pixMap;
 }
 
 void MainWindow::dropElement(const int dayNumber, const int dayIndex, const int elemIndex,
-                             const elementData_t elemData) {
+                             const elementData_t &elemData) {
   dropNoChanges();
 
   bool daysCheck_[6];
   for (int i = 0; i < 6; i++) {
     if (i == dayNumber) {
       daysCheck_[i] = true;
-    }
-    else {
+    } else {
       daysCheck_[i] = false;
     }
   }
@@ -557,15 +555,14 @@ void MainWindow::dropElement(const int dayNumber, const int dayIndex, const int 
   recieveTimeTableZoneData(daysCheck_, elemData);
 }
 
-void MainWindow::sendElementsHeight(const int height, const int index) {
+void MainWindow::sendElementsHeight(const int /*height*/, const int index) {
   if (arrDays_[index].elementsCount < 3) {
     arrDays_[index].widgetDay->setFixedHeight(ELEMENT_HEIGHT_ * 3);
   }
 }
 
 void MainWindow::on_reg_clicked() {
-  if (ui->mailReg->text().isEmpty() || ui->passwordReg->text().isEmpty() ||
-      ui->password2Reg->text().isEmpty()) {
+  if (ui->mailReg->text().isEmpty() || ui->passwordReg->text().isEmpty() || ui->password2Reg->text().isEmpty()) {
     QMessageBox message;
     message.setText(QStringLiteral("Вы заполнили не все поля"));
     message.exec();
@@ -586,7 +583,7 @@ void MainWindow::on_reg_clicked() {
 
   QUrl url = QUrl(Network::serverUrl + Network::registrationUrl);
   QJsonDocument jsonDoc(json);
-  server->sendPostRequest(url , jsonDoc.toJson());
+  server->sendPostRequest(url, jsonDoc.toJson());
 
   ui->message->show();
   ui->mailReg->clear();
@@ -613,8 +610,7 @@ void MainWindow::loginReply(bool login) {
     ui->password->clear();
     ui->demoLable->hide();
     ui->hideCalendar->show();
-  }
-  else {
+  } else {
     QMessageBox message;
     message.setText(QStringLiteral("Неверный логин или пароль"));
     message.exec();
@@ -634,7 +630,7 @@ void MainWindow::clearWeekData() {
       recieveDayAndElementIndex(i, arrDays_[i].elementsCount - 1, false);
     }
   }
-  //iCurrentDay_ = 0;
+  // iCurrentDay_ = 0;
 
   // clear Notes
   deleteNotes();
@@ -644,7 +640,7 @@ void MainWindow::clearWeekData() {
 }
 
 void MainWindow::deleteNotes() {
-  int pageNum = ui->note->getNumberCurrentFile();
+  //  int pageNum = ui->note->getNumberCurrentFile();
   ui->note->setCharCounter(0);
   ui->note->clear();
 }

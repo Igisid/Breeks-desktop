@@ -1,18 +1,18 @@
 #include "Front/mainwindow.h"
+
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QtConcurrent/QtConcurrent>
 
-void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
+void MainWindow::setBreeksZone(breeksZone_t *breeksZone) {
   const int groupBoxHeight = 100;
 
   //-----BREEKS ZONE sizes-----
   breeksZone->breeksZoneGroupBox->setFixedWidth(WORK_ZONE_BIG_WIDGET_WIDTH - 36);
   breeksZone->breeksZoneGroupBox->setFixedHeight(groupBoxHeight);
-  //breeksZone->breeksZoneGroupBox->setContentsMargins(0, 0, 0, 0);
-  breeksZone->breeksZoneGroupBox->setStyleSheet(
-    "QGroupBox {background: #F7F7F7; border: 1.5px solid #F1F1F1; border-radius: 20px;}"
-  );
+  // breeksZone->breeksZoneGroupBox->setContentsMargins(0, 0, 0, 0);
+  breeksZone->breeksZoneGroupBox->setStyleSheet("QGroupBox {background: #F7F7F7; border: 1.5px solid #F1F1F1; "
+                                                "border-radius: 20px;}");
 
   breeksZone->breeksZoneGroupBox->setLayout(breeksZone->breeksZoneLayout);
   breeksZone->breeksZoneLayout->setContentsMargins(100, 0, 100, 0);
@@ -36,63 +36,56 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
     connect(breeksZone->buttonDelete, &DeleteBreeksZoneButton::deleteZone, this, &MainWindow::deleteBreeksZone);
   }
 
-  connect(breeksZone->buttonDelete, SIGNAL(deleteZone(int)), this, SLOT(deleteBreeksZone(int)));
-
   //-----DESCRIPTION ZONE-----
   breeksZone->breeksDescriptionGroupBox->setFixedSize(300, groupBoxHeight);
-  breeksZone->breeksDescriptionGroupBox->setStyleSheet(
-    "QGroupBox{background: #F7F7F7; border: 1.5px solid #F1F1F1; border-radius: 15px;}"
-  );
+  breeksZone->breeksDescriptionGroupBox->setStyleSheet("QGroupBox{background: #F7F7F7; border: 1.5px solid #F1F1F1; "
+                                                       "border-radius: 15px;}");
 
   breeksDescriptionZoneScrollArea_->setHorizontalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAlwaysOn);
-  breeksDescriptionZoneScrollArea_->horizontalScrollBar()->setStyleSheet(
-    "QScrollBar:horizontal {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "height: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+  breeksDescriptionZoneScrollArea_->horizontalScrollBar()->setStyleSheet("QScrollBar:horizontal {"
+                                                                         "border: 0.1px solid #FFFFFF;"
+                                                                         "background: #FFFFFF;"
+                                                                         "height: 9px;"
+                                                                         "margin: 0px 0px 0px 0px;}"
 
-    "QScrollBar::handle:horizontal {"
-        "border-radius: 4px;"
-        "background: #FFFFFF;"
-        "min-height: 0px;}"
+                                                                         "QScrollBar::handle:horizontal {"
+                                                                         "border-radius: 4px;"
+                                                                         "background: #FFFFFF;"
+                                                                         "min-height: 0px;}"
 
-    "QScrollBar::add-line:horizontal {"
-        "border: none;"
-        "background: none;}"
+                                                                         "QScrollBar::add-line:horizontal {"
+                                                                         "border: none;"
+                                                                         "background: none;}"
 
-    "QScrollBar::sub-line:horizontal {"
-        "border: none;"
-        "background: none;}"
-  );
+                                                                         "QScrollBar::sub-line:horizontal {"
+                                                                         "border: none;"
+                                                                         "background: none;}");
 
-  breeksDescriptionZoneScrollArea_->verticalScrollBar()->setStyleSheet(
-    "QScrollBar:vertical {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "width: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+  breeksDescriptionZoneScrollArea_->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                                       "border: 0.1px solid #FFFFFF;"
+                                                                       "background: #FFFFFF;"
+                                                                       "width: 9px;"
+                                                                       "margin: 0px 0px 0px 0px;}"
 
-    "QScrollBar::handle:vertical {"
-        "border: 0.5px solid #e3e3df;"
-        "border-radius: 4px;"
-        "background: #e3e3df;"
-        "min-height: 0px;}"
+                                                                       "QScrollBar::handle:vertical {"
+                                                                       "border: 0.5px solid #e3e3df;"
+                                                                       "border-radius: 4px;"
+                                                                       "background: #e3e3df;"
+                                                                       "min-height: 0px;}"
 
-    "QScrollBar::handle:vertical:hover {"
-        "border: 0.5px solid #c7c7bf;"
-        "border-radius: 4px;"
-        "background: #c7c7bf;"
-        "min-height: 0px;}"
+                                                                       "QScrollBar::handle:vertical:hover {"
+                                                                       "border: 0.5px solid #c7c7bf;"
+                                                                       "border-radius: 4px;"
+                                                                       "background: #c7c7bf;"
+                                                                       "min-height: 0px;}"
 
-    "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                                                       "QScrollBar::add-line:vertical {"
+                                                                       "border: none;"
+                                                                       "background: none;}"
 
-    "QScrollBar::sub-line:vartical {"
-        "border: none;"
-        "background: none;}"
-  );
+                                                                       "QScrollBar::sub-line:vartical {"
+                                                                       "border: none;"
+                                                                       "background: none;}");
 
   QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
   effect->setBlurRadius(5);
@@ -107,27 +100,25 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
   breeksZone->breekText->setFont(font);
 
   breeksZone->breekText->setVerticalScrollBarPolicy(Qt::ScrollBarPolicy::ScrollBarAsNeeded);
-  breeksZone->breekText->verticalScrollBar()->setStyleSheet(
-    "QScrollBar:vertical {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "width: 12px;"
-        "margin: 0px 0px 0px 0px;}"
+  breeksZone->breekText->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                            "border: 0.1px solid #FFFFFF;"
+                                                            "background: #FFFFFF;"
+                                                            "width: 12px;"
+                                                            "margin: 0px 0px 0px 0px;}"
 
-    "QScrollBar::handle:vertical {"
-        //"border: 0.5px solid #c7c7bf;"
-        "border-radius: 3px;"
-        "background: #e3e3df;"
-        "min-height: 0px;}"
+                                                            "QScrollBar::handle:vertical {"
+                                                            //"border: 0.5px solid #c7c7bf;"
+                                                            "border-radius: 3px;"
+                                                            "background: #e3e3df;"
+                                                            "min-height: 0px;}"
 
-    "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                                            "QScrollBar::add-line:vertical {"
+                                                            "border: none;"
+                                                            "background: none;}"
 
-    "QScrollBar::sub-line:vartical {"
-        "border: none;"
-        "background: none;}"
-  );
+                                                            "QScrollBar::sub-line:vartical {"
+                                                            "border: none;"
+                                                            "background: none;}");
 
   const int buttonSize = 20;
   breeksZone->buttonBreekDays->setFixedSize(buttonSize, buttonSize);
@@ -135,9 +126,10 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
 
   breeksZone->breeksDescriptionLayout->addWidget(breeksZone->breekText, 0, 0, 1, 1);
 
-  //breeksZone->breeksDescriptionLayout->addWidget(breeksZone->buttonBreekDays, 0, 2);
-  //breeksZone->buttonBreekDays->setStyleSheet("border-image:url(:/Images/Front/Images/calendar-and-clock.png)");
-  //breeksZone->buttonBreekDays->setStyleSheet("background: none;");
+  // breeksZone->breeksDescriptionLayout->addWidget(breeksZone->buttonBreekDays,
+  // 0, 2);
+  // breeksZone->buttonBreekDays->setStyleSheet("border-image:url(:/Images/Front/Images/calendar-and-clock.png)");
+  // breeksZone->buttonBreekDays->setStyleSheet("background: none;");
 
   breeksZone->breeksDescriptionLayout->addWidget(breeksZone->buttonDelete, 0, 1);
   breeksZone->buttonDelete->setStyleSheet(
@@ -197,18 +189,18 @@ void MainWindow::setBreeksZone(breeksZone_t* breeksZone) {
       QString sAdress = ":/Images/Front/Images/Breeks/" + QString::number(i) + "." + QString::number(j) + ".png";
 
       switch (j) {
-        case 1 :
-          arrEmojiNormal[i] = sAdress;
-          break;
-        case 2 :
-          arrEmojiCompleted[i] = sAdress;
-          break;
-        case 3 :
-          arrEmojiDroped[i] = sAdress;
-          break;
-        case 4 :
-          arrEmojiProcess[i] = sAdress;
-          break;
+      case 1:
+        arrEmojiNormal[i] = sAdress;
+        break;
+      case 2:
+        arrEmojiCompleted[i] = sAdress;
+        break;
+      case 3:
+        arrEmojiDroped[i] = sAdress;
+        break;
+      case 4:
+        arrEmojiProcess[i] = sAdress;
+        break;
       }
     }
   }
@@ -236,10 +228,10 @@ void MainWindow::buildBreeksDescriptionZone() {
   breeksDescriptionZoneScrollArea_->setWidget(bigWidgetInBreeksDescriptionZone_);
   breeksDescriptionZoneScrollArea_->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 9px;"));
 
-  //breeksDescriptionZoneLayout_->setContentsMargins(0, 0, 0, 200);
+  // breeksDescriptionZoneLayout_->setContentsMargins(0, 0, 0, 200);
   bigWidgetInBreeksDescriptionZone_->setLayout(breeksDescriptionZoneLayout_);
 
-  //GroupBox to describe posibilities of breeks
+  // GroupBox to describe posibilities of breeks
   QVBoxLayout *lay1 = new QVBoxLayout;
 
   calendarWidget = new QGroupBox;
@@ -254,7 +246,7 @@ void MainWindow::buildBreeksDescriptionZone() {
 
   calendarScrollArea->setWidget(calendarWidget);
   calendarWidget->setFixedSize(descriptionWidth - 25, descriptionHeight - 80);
-  calendarWidget->setStyleSheet("QGroupBox{background: #FFFFFF; border-radius: 6px;}");
+  calendarWidget->setStyleSheet(QStringLiteral("QGroupBox{background: #FFFFFF; border-radius: 6px;}"));
   calendarWidget->setLayout(lay1);
 
   QVBoxLayout *lay2 = new QVBoxLayout;
@@ -265,23 +257,21 @@ void MainWindow::buildBreeksDescriptionZone() {
   QDateTime date = QDateTime::currentDateTime();
   QString prevMonth = QLatin1String("");
 
-  for (int i = 0; i < 53; ++i) { //53 - counts of week in 2021
+  for (int i = 0; i < 53; ++i) { // 53 - counts of week in 2021
     calendarWidget->setFixedHeight(40 * (i + 1));
-    CalendarWeek *week = new CalendarWeek;
-    week->date->setMSecsSinceEpoch(1609113600000); //28.12.2020
+    CalendarWeek *week = new CalendarWeek();
+    week->date->setMSecsSinceEpoch(1609113600000); // 28.12.2020
     week->date->setDate(week->date->addDays(7 * i).date());
 
     if (week->date->toMSecsSinceEpoch() < date.toMSecsSinceEpoch()) {
-      week->setStyleSheet(
-       "QPushButton{background: #dfe0df; border-radius: 5px; "
-       "font-size: 12px;font-family: Helvetica;color: #323232; font-weight: bold; font-style: italic; text-align:left; padding-left: 7px}"
-      );
-    }
-    else {
-      week->setStyleSheet(
-        "QPushButton{background: " + tag::ARR_LIGHT_COLORS[0] + "; border-radius: 5px; "
-        "font-size: 12px;font-family: Arial;color: #323232; font-weight: bold; font-style: italic; text-align:left; padding-left: 7px}"
-      );
+      week->setStyleSheet("QPushButton{background: #dfe0df; border-radius: 5px; "
+                          "font-size: 12px;font-family: Helvetica;color: #323232; font-weight: "
+                          "bold; font-style: italic; text-align:left; padding-left: 7px}");
+    } else {
+      week->setStyleSheet("QPushButton{background: " + tag::ARR_LIGHT_COLORS[0] +
+                          "; border-radius: 5px; "
+                          "font-size: 12px;font-family: Arial;color: #323232; font-weight: "
+                          "bold; font-style: italic; text-align:left; padding-left: 7px}");
 
       QGraphicsDropShadowEffect *effect = new QGraphicsDropShadowEffect;
       effect->setBlurRadius(5);
@@ -346,7 +336,7 @@ void MainWindow::buildBreeksDescriptionZone() {
     sDates += QString::number(day);
     week->setText(sDates + " " + monthName);
 
-    if (monthName != prevMonth && prevMonth != "") {
+    if (monthName != prevMonth && prevMonth != QLatin1String("")) {
       lay2->addSpacing(15);
     }
     prevMonth = monthName;
@@ -359,36 +349,34 @@ void MainWindow::buildBreeksDescriptionZone() {
   breeksDescriptionZoneLayout_->addWidget(calendarScrollArea, 0, 0, Qt::AlignCenter);
   calendarScrollArea->verticalScrollBar()->setValue(500);
 
-  calendarScrollArea->verticalScrollBar()->setStyleSheet(
-    "QScrollBar:vertical {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "width: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+  calendarScrollArea->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                         "border: 0.1px solid #FFFFFF;"
+                                                         "background: #FFFFFF;"
+                                                         "width: 9px;"
+                                                         "margin: 0px 0px 0px 0px;}"
 
-    "QScrollBar::handle:vertical {"
-        "border: 0.5px solid #e3e3df;"
-        "border-radius: 4px;"
-        "background: #e3e3df;"
-        "min-height: 0px;}"
+                                                         "QScrollBar::handle:vertical {"
+                                                         "border: 0.5px solid #e3e3df;"
+                                                         "border-radius: 4px;"
+                                                         "background: #e3e3df;"
+                                                         "min-height: 0px;}"
 
-    "QScrollBar::handle:vertical:hover {"
-        "border: 0.5px solid #c7c7bf;"
-        "border-radius: 4px;"
-        "background: #c7c7bf;"
-        "min-height: 0px;}"
+                                                         "QScrollBar::handle:vertical:hover {"
+                                                         "border: 0.5px solid #c7c7bf;"
+                                                         "border-radius: 4px;"
+                                                         "background: #c7c7bf;"
+                                                         "min-height: 0px;}"
 
-    "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                                         "QScrollBar::add-line:vertical {"
+                                                         "border: none;"
+                                                         "background: none;}"
 
-    "QScrollBar::sub-line:vartical {"
-        "border: none;"
-        "background: none;}"
-  );
+                                                         "QScrollBar::sub-line:vartical {"
+                                                         "border: none;"
+                                                         "background: none;}");
 }
 
-void MainWindow::setDaysConnect(breeksZone_t* breeksZone) {
+void MainWindow::setDaysConnect(breeksZone_t *breeksZone) {
   for (int i = 0; i < DAYS_COUNT; ++i) {
     connect(breeksZone->arrBreeksZoneDays[i], qOverload<>(&DescriptionZoneDayButton::singleClick),
             breeksZone->arrBreeks[i], &Breek::changeBreekState);
@@ -406,7 +394,7 @@ void MainWindow::setDaysConnect(breeksZone_t* breeksZone) {
   }
 }
 
-void MainWindow::allocateMemoryForBreeks(breeksZone_t* breeksZone) {
+void MainWindow::allocateMemoryForBreeks(breeksZone_t *breeksZone) const {
   breeksZone->breeksZoneGroupBox = new QGroupBox;
   breeksZone->breeksZoneLayout = new QGridLayout;
 
@@ -498,8 +486,7 @@ void MainWindow::setBreeksDescriptionZoneFocus(int zoneIndex, bool cond) {
     shadow->setColor("#909090");
 
     arrBreeksZones_[zoneIndex].breeksDescriptionGroupBox->setGraphicsEffect(shadow);
-  }
-  else {
+  } else {
     arrBreeksZones_[zoneIndex].breeksDescriptionGroupBox->setGraphicsEffect(nullptr);
   }
 }
@@ -508,24 +495,24 @@ void MainWindow::descriptionZoneDayDobleClick(int zoneIndex, int dayIndex) {
   int dayPos = 0;
 
   switch (dayIndex) {
-    case 0 :
-      dayPos = 0;
-      break;
-    case 1 :
-      dayPos = 0;
-      break;
-    case 2 :
-      dayPos = 350;
-      break;
-    case 3 :
-      dayPos = 680;
-      break;
-    case 4 :
-      dayPos = 1000;
-      break;
-    case 5 :
-      dayPos = 1000;
-      break;
+  case 0:
+    dayPos = 0;
+    break;
+  case 1:
+    dayPos = 0;
+    break;
+  case 2:
+    dayPos = 350;
+    break;
+  case 3:
+    dayPos = 680;
+    break;
+  case 4:
+    dayPos = 1000;
+    break;
+  case 5:
+    dayPos = 1000;
+    break;
   }
 
   workZoneScrollArea_->horizontalScrollBar()->setValue(dayPos);
@@ -545,14 +532,14 @@ void MainWindow::deleteBreeksZone(int zoneIndex) {
 
   if (itemLine != nullptr) {
     delete itemLine->widget();
-//    delete itemLine;
+    //    delete itemLine;
   }
 
   workZoneLayout_->update();
 
   auto itemDescription = breeksDescriptionZoneLayout_->itemAt(zoneIndex + 1);
   delete itemDescription->widget();
-//  delete itemDescription;
+  //  delete itemDescription;
 
   breeksDescriptionZoneLayout_->update();
 
@@ -574,13 +561,13 @@ void MainWindow::deleteBreeksZone(int zoneIndex) {
 void MainWindow::deleteBreeksZoneClientOnly(int zoneIndex) {
   auto itemLine = workZoneLayout_->itemAt(zoneIndex + 6);
   delete itemLine->widget();
-//  delete itemLine;
+  //  delete itemLine;
 
   workZoneLayout_->update();
 
   auto itemDescription = breeksDescriptionZoneLayout_->itemAt(zoneIndex + 1);
   delete itemDescription->widget();
-//  delete itemDescription;
+  //  delete itemDescription;
 
   breeksDescriptionZoneLayout_->update();
 
@@ -601,7 +588,7 @@ void MainWindow::deleteBreeksZoneClientOnly(int zoneIndex) {
 
 void MainWindow::delay(int millisecondsToWait) {
   QTime dieTime = QTime::currentTime().addMSecs(millisecondsToWait);
-  while(QTime::currentTime() < dieTime) {
+  while (QTime::currentTime() < dieTime) {
     QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
   }
 }
@@ -646,8 +633,9 @@ void MainWindow::moveBreek(int zoneIndex, int dayIndex, bool right) {
         zone->arrBreeks[dayIndex + 1]->changeBreekState();
         zone->arrBreeks[dayIndex]->move(posFrom);
 
-//        workZoneScrollArea_->ensureVisible(zone->arrBreeks[dayIndex + 1]->pos().x() + 530,
-//                                           workZoneScrollArea_->verticalScrollBar()->sliderPosition());
+        //        workZoneScrollArea_->ensureVisible(zone->arrBreeks[dayIndex +
+        //        1]->pos().x() + 530,
+        //                                           workZoneScrollArea_->verticalScrollBar()->sliderPosition());
       }
       zone->arrBreeks[dayIndex + 1]->setFocus();
       QThread::msleep(200);
@@ -655,8 +643,7 @@ void MainWindow::moveBreek(int zoneIndex, int dayIndex, bool right) {
 
       return;
     }
-  }
-  else {
+  } else {
     if (dayIndex > 0) {
       breeksZone_t *zone = &arrBreeksZones_[zoneIndex];
       if (!zone->arrBreeks[dayIndex - 1]->isEnabled()) {
@@ -687,8 +674,9 @@ void MainWindow::moveBreek(int zoneIndex, int dayIndex, bool right) {
         }
         zone->arrBreeks[dayIndex - 1]->changeBreekState();
         zone->arrBreeks[dayIndex]->move(posFrom);
-//      	workZoneScrollArea_->ensureVisible(zone->arrBreeks[dayIndex - 1]->pos().x() - 405,
-//                                           workZoneScrollArea_->verticalScrollBar()->sliderPosition());
+        //      	workZoneScrollArea_->ensureVisible(zone->arrBreeks[dayIndex
+        //      - 1]->pos().x() - 405,
+        //                                           workZoneScrollArea_->verticalScrollBar()->sliderPosition());
       }
       zone->arrBreeks[dayIndex - 1]->setFocus();
       QThread::msleep(200);
@@ -701,9 +689,8 @@ void MainWindow::moveBreek(int zoneIndex, int dayIndex, bool right) {
   if (dayIndex == iCurrentDay_) {
     arrBreeksZones_[zoneIndex].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(
         QStringLiteral("background: #FFFFFF; border-radius: 4px;"));
-    );
   }
-  if (iCurrentDay_ < DAYS_COUNT & arrBreeksZones_[zoneIndex].arrBreeks[iCurrentDay_]->getState()) {
+  if (iCurrentDay_ < DAYS_COUNT && arrBreeksZones_[zoneIndex].arrBreeks[iCurrentDay_]->getState()) {
     arrBreeksZones_[zoneIndex].arrBreeksZoneDays[iCurrentDay_]->setStyleSheet(
         QStringLiteral("background: #b3defc; border-radius: 4px;"));
   }
@@ -718,7 +705,7 @@ void MainWindow::sendPutRequestBl(int zoneIndex) {
   json.insert(QStringLiteral("description"), newElement.breekText->toPlainText());
 
   QJsonArray jArr;
-  foreach(charStyle_t ch, newElement.breekText->getCharStyleVector()) {
+  foreach (charStyle_t ch, newElement.breekText->getCharStyleVector()) {
     QJsonObject jChar;
     jChar.insert(QStringLiteral("bold"), ch.bold);
     jChar.insert(QStringLiteral("italic"), ch.italic);
@@ -761,7 +748,7 @@ void MainWindow::sendPutRequestBl(int zoneIndex) {
 
   QUrl url = QUrl(Network::serverUrl + Network::editBreeksLineUrl + "/" + QString::number(newElement.idOnServer));
   QJsonDocument jsonDoc(json);
-  server->sendPutRequestWithBearerToken(url , jsonDoc.toJson(), userData->getAccessToken());
+  server->sendPutRequestWithBearerToken(url, jsonDoc.toJson(), userData->getAccessToken());
 }
 
 void MainWindow::changeWeek(qint64 msecs) {
@@ -770,4 +757,3 @@ void MainWindow::changeWeek(qint64 msecs) {
   setDayInfo(date.date());
   clearAndInitWeekData(server->getUserData()->getAccessToken());
 }
-

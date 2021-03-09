@@ -3,15 +3,14 @@
 
 #include <QPushButton>
 
-class EmojiButton : public QPushButton
-{
+class EmojiButton : public QPushButton {
   Q_OBJECT
 
 public:
-  EmojiButton(const int);
+  EmojiButton(const int, QObject *object = nullptr);
   void mousePressEvent(QMouseEvent *event);
 
-signals :
+signals:
   void chosed(int);
 
 private:

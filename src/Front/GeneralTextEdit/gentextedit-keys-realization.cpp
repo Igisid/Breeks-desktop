@@ -1,23 +1,21 @@
 #include "gentextedit.h"
 
 //---------BACKSPACE / DELETE
-void GenTextEdit::deleteSmth(const Qt::KeyboardModifiers kmModifiers,
-			     const QTextCursor::MoveOperation whereMove,
-			     int& cursorPos, const int blindSpot, const int a) {
+void GenTextEdit::deleteSmth(const Qt::KeyboardModifiers kmModifiers, const QTextCursor::MoveOperation whereMove,
+                             int &cursorPos, const int blindSpot, const int a) {
   int nSelectedChars = this->textCursor().selectedText().length();
 
-  if (nSelectedChars == 0) { //no selected text
+  if (nSelectedChars == 0) { // no selected text
     if (cursorPos != blindSpot) {
       iterator iterFirst = charStyleVector_.begin();
 
       if (kmModifiers == Qt::ControlModifier) {
         QTextCursor c = this->textCursor();
 
-        //for normal working Ctrl + Backspace/Delete ---
-        //special situation with item for Backspace and Delete
-        QTextCursor::MoveOperation moveSide = (whereMove == QTextCursor::PreviousWord) ?
-                                               QTextCursor::Left :
-                                               QTextCursor::Right;
+        // for normal working Ctrl + Backspace/Delete ---
+        // special situation with item for Backspace and Delete
+        QTextCursor::MoveOperation moveSide =
+            (whereMove == QTextCursor::PreviousWord) ? QTextCursor::Left : QTextCursor::Right;
         c.movePosition(moveSide, QTextCursor::KeepAnchor);
         int i = (whereMove == QTextCursor::PreviousWord) ? 1 : -1;
 
@@ -28,60 +26,53 @@ void GenTextEdit::deleteSmth(const Qt::KeyboardModifiers kmModifiers,
             /* 1) _innnnnn or nnnnnn_i - cursor on item ('_' - cursor)
                  2) selected text != 0
                  3) a_bc or ab_c - cursor on [pos] char ('_' - space) */
-            if (
-              (charStyleVector_[std::min(c.position() + i, charCounter_ - 1)].item == false) &&
-              (c.selectedText().length() > 2) && (
-                  (c.selectedText()[pos] != ' ' && c.selectedText()[pos + i] == ' ') ||
-                  (c.selectedText()[pos] == ' ' && c.selectedText()[pos + i] != ' ')
-              )
-            ) {
+            if ((charStyleVector_[std::min(c.position() + i, charCounter_ - 1)].item == false) &&
+                (c.selectedText().length() > 2) &&
+                ((c.selectedText().at(pos) != ' ' && c.selectedText().at(pos + i) == ' ') ||
+                 (c.selectedText().at(pos) == ' ' && c.selectedText().at(pos + i) != ' '))) {
               int selectionLength = c.selectedText().length() - 1;
               c.clearSelection();
               c.setPosition(this->textCursor().position());
               c.movePosition(moveSide, QTextCursor::KeepAnchor, selectionLength);
 
               break;
-            }
-            else if (charStyleVector_[c.position() - 1].star == true || c.position() == charCounter_) {
+            } else if (charStyleVector_[c.position() - 1].star == true || c.position() == charCounter_) {
               break;
-            }
-            else {
+            } else {
               c.movePosition(moveSide, QTextCursor::KeepAnchor);
               continue;
             }
           }
           break;
         }
-        //end of while()
+        // end of while()
 
         iterFirst += c.selectionStart();
         iterator iterLast = iterFirst + c.selectedText().length();
 
-	//Add command in UndoRedoBuffer
-	commandInfo_t command;
-	setCommandInfo(command, command::deleteStr, iterFirst - charStyleVector_.begin(), c.selectedText());
-	undoRedoBuffer_->pushUndoCommand(command);
+        // Add command in UndoRedoBuffer
+        commandInfo_t command;
+        setCommandInfo(command, command::deleteStr, iterFirst - charStyleVector_.begin(), c.selectedText());
+        undoRedoBuffer_->pushUndoCommand(command);
 
         this->setTextCursor(c);
         charStyleVector_.erase(iterFirst, iterLast);
         charCounter_ -= c.selectedText().length();
-      }
-      else {
+      } else {
         iterFirst += this->textCursor().position() - a;
 
-	//Add command in UndoRedoBuffer
-	commandInfo_t command;
-	const int pos = iterFirst - charStyleVector_.begin();
-	const QString text = this->toPlainText().at(pos);
-	setCommandInfo(command, command::deleteStr, pos, text);
-	undoRedoBuffer_->pushUndoCommand(command);
+        // Add command in UndoRedoBuffer
+        commandInfo_t command;
+        const int pos = iterFirst - charStyleVector_.begin();
+        const QString text = this->toPlainText().at(pos);
+        setCommandInfo(command, command::deleteStr, pos, text);
+        undoRedoBuffer_->pushUndoCommand(command);
 
         charStyleVector_.erase(iterFirst);
         --charCounter_;
       }
     }
-  }
-  else {
+  } else {
     detailsEraseSelectedText(cursorPos);
   }
 }
@@ -91,27 +82,27 @@ void GenTextEdit::addTodoList() {
   addTodoList(pointSign_);
 }
 
-void GenTextEdit::addTodoList(const QString itemSign) {
+void GenTextEdit::addTodoList(const QString &itemSign) {
   int cursorPos = this->textCursor().position();
-  QTextCharFormat charFormat; //to back Normal font style of text after Bold, Italic, Underline... words
+  QTextCharFormat charFormat; // to back Normal font style of text after Bold, Italic, Underline... words
   charFormat.setFontWeight(QFont::Normal);
 
-  //if there is selected text ---
+  // if there is selected text ---
   QTextCursor c(this->textCursor());
   c.movePosition(QTextCursor::StartOfLine, QTextCursor::KeepAnchor);
 
-  if (this->textCursor().selectedText() != "") {
+  if (this->textCursor().selectedText() != QLatin1String("")) {
     detailsEraseSelectedText(cursorPos);
   }
-  //for checking empty line
+  // for checking empty line
   int n = c.selectedText().length();
-  QString spaceLine = "";
+  QString spaceLine = QLatin1String("");
   for (int i = 0; i < n; ++i) {
-    spaceLine += " ";
+    spaceLine += QLatin1String(" ");
   }
   //---
 
-  QString item = "  " + itemSign + " "; //2 space + point + space
+  QString item = "  " + itemSign + " "; // 2 space + point + space
   charStyle_t ch;
   detailsSetCharStyle(ch);
   detailsSetCharStyle(ch, charStyle::Item);
@@ -120,8 +111,7 @@ void GenTextEdit::addTodoList(const QString itemSign) {
     this->textCursor().insertText(item, charFormat);
     charStyleVector_.insert(cursorPos, 4, ch);
     charCounter_ += 4;
-  }
-  else {
+  } else {
     item = '\n' + item;
     this->textCursor().insertText(item, charFormat);
     charStyleVector_.insert(cursorPos, 4, ch);
@@ -130,7 +120,7 @@ void GenTextEdit::addTodoList(const QString itemSign) {
     charCounter_ += 5;
   }
 
-  //Add coommand to UndoRefoBuffer
+  // Add coommand to UndoRefoBuffer
   commandInfo_t command;
   setCommandInfo(command, command::insertStr, cursorPos, item);
   undoRedoBuffer_->pushUndoCommand(command);
@@ -145,21 +135,21 @@ void GenTextEdit::addStar() {
   int pos = c.position();
 
   QTextCharFormat fmt;
-  //fmt.setBackground(QColor(colors::marina));
+  // fmt.setBackground(QColor(colors::marina));
   c.insertHtml(warrningSign_);
   c.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
   c.setCharFormat(fmt);
-  QString insertStr = warrningSign_; //for Ctrl + z
-  //if some stars we need only one space
+  QString insertStr = warrningSign_; // for Ctrl + z
+  // if some stars we need only one space
   if ((charCounter_ == 0) || (charStyleVector_[std::min(pos, charCounter_ - 1)].star == false &&
-      charStyleVector_[std::min(pos, charCounter_ - 1)].item == false)) {
+                              charStyleVector_[std::min(pos, charCounter_ - 1)].item == false)) {
     addSpace(c.position());
     insertStr += ' ';
   }
   detailsSetCharStyle(ch, charStyle::Star);
   charStyleVector_.insert(pos, 1, ch);
 
-  //Add command to UndoRedoBuffer
+  // Add command to UndoRedoBuffer
   commandInfo_t command;
   setCommandInfo(command, command::insertStr, pos, insertStr);
   undoRedoBuffer_->pushUndoCommand(command);
@@ -175,7 +165,7 @@ void GenTextEdit::addTab(int &cursorPos) {
   detailsSetCharStyle(ch);
 
   QTextCursor c = this->textCursor();
-  bool isItem = false;
+  //  bool isItem = false;
   if (c.hasSelection()) {
     c.clearSelection();
   }
@@ -185,7 +175,7 @@ void GenTextEdit::addTab(int &cursorPos) {
   int pos = c.position();
 
   for (int i = 0; i < TAB_LENGTH; ++i) {
-    c.insertText(" ", charFormat);
+    c.insertText(QStringLiteral(" "), charFormat);
     charStyleVector_.insert(pos + i, 1, ch);
     ++charCounter_;
   }
@@ -193,22 +183,22 @@ void GenTextEdit::addTab(int &cursorPos) {
   c.movePosition(QTextCursor::EndOfLine, QTextCursor::MoveAnchor);
   this->setTextCursor(c);
 
-  //Add command to UndoRedoBuffer
+  // Add command to UndoRedoBuffer
   commandInfo_t command;
-  QString sTab = "";
+  QString sTab = QLatin1String("");
   sTab.insert(TAB_LENGTH - 1, " ");
   setCommandInfo(command, command::insertStr, pos, sTab, TAB_LENGTH);
   undoRedoBuffer_->pushUndoCommand(command);
 }
 
 //---------BackTab
-void GenTextEdit::backTab(int &cursorPos) {
+void GenTextEdit::backTab(int cursorPos) {
   QTextCursor c = this->textCursor();
   c.clearSelection();
   c.movePosition(QTextCursor::StartOfBlock);
   c.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, TAB_LENGTH);
 
-  QString sTab = "";
+  QString sTab = QLatin1String("");
   sTab.insert(TAB_LENGTH - 1, " ");
 
   if (c.selectedText() == sTab) {
@@ -216,7 +206,7 @@ void GenTextEdit::backTab(int &cursorPos) {
     iterator iterLast = charStyleVector_.begin() + c.position();
     iterator iterFirst = iterLast - TAB_LENGTH;
 
-    //Add command to UndoRedoBuffer
+    // Add command to UndoRedoBuffer
     commandInfo_t command;
     setCommandInfo(command, command::deleteStr, c.position() - TAB_LENGTH, sTab, TAB_LENGTH);
     undoRedoBuffer_->pushUndoCommand(command);
@@ -237,7 +227,7 @@ void GenTextEdit::addSpace(const int cursorPos) {
   charStyle_t ch;
   detailsSetCharStyle(ch);
 
-  this->textCursor().insertText(" ", charFormat);
+  this->textCursor().insertText(QStringLiteral(" "), charFormat);
   charStyleVector_.insert(cursorPos, 1, ch);
 
   ++charCounter_;
@@ -253,19 +243,18 @@ void GenTextEdit::setCharStyle(const int style, const bool forBuffer) {
   for (int i = first; i < last; ++i) {
     c.setPosition(i);
     c.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor);
-    //avoid effects for item
-    if (charStyleVector_[c.position() - 1].item == true ||
-        charStyleVector_[c.position() - 1].star == true) {
+    // avoid effects for item
+    if (charStyleVector_[c.position() - 1].item == true || charStyleVector_[c.position() - 1].star == true) {
       continue;
     }
 
-    detailsSetCharStyle(charStyleVector_[i], style, status); //set new style
+    detailsSetCharStyle(charStyleVector_[i], style, status); // set new style
 
     QTextCharFormat textFormat;
     textFormat.setFontWeight(QFont::Normal);
 
     detailsSetFormatFields(textFormat, charStyleVector_[i]);
-    if (charStyleVector_[i].sColor != "") {
+    if (charStyleVector_[i].sColor != QLatin1String("")) {
       textFormat.setBackground(QColor(charStyleVector_[i].sColor));
     }
     if (charStyleVector_[i].spellChecker == false ||
@@ -273,8 +262,8 @@ void GenTextEdit::setCharStyle(const int style, const bool forBuffer) {
       c.setCharFormat(textFormat);
     }
   }
-  if (!forBuffer) { //because that function is also used for change style by Ctrl + z
-    //Add coommand to UndoRefoBuffer
+  if (!forBuffer) { // because that function is also used for change style by Ctrl + z
+    // Add coommand to UndoRefoBuffer
     commandInfo_t command;
     setCommandInfo(command, command::changeStyle, first, QString::number(style), last - first);
     undoRedoBuffer_->pushUndoCommand(command);
@@ -282,10 +271,10 @@ void GenTextEdit::setCharStyle(const int style, const bool forBuffer) {
 }
 
 //---------COLOR TEXT
-void GenTextEdit::colorText(const QString color, const bool forBuffer) {
+void GenTextEdit::colorText(const QString &color, const bool forBuffer) {
   QTextCursor c = this->textCursor();
 
-  if (c.hasSelection() && color != "") {
+  if (c.hasSelection() && color != QLatin1String("")) {
     const int first = c.selectionStart();
     const int last = c.selectionEnd();
 
@@ -299,7 +288,7 @@ void GenTextEdit::colorText(const QString color, const bool forBuffer) {
     }
 
     if (!forBuffer) {
-      //Add coommand to UndoRefoBuffer
+      // Add coommand to UndoRefoBuffer
       commandInfo_t command;
       setCommandInfo(command, command::changeColor, first, color, last - first);
       undoRedoBuffer_->pushUndoCommand(command);
@@ -318,28 +307,23 @@ void GenTextEdit::undoCommand() {
 
     if (command.commandName == command::insertStr) {
       detailsUndoRedoDeleteText(command);
-    }
-    else if (command.commandName == command::deleteStr) {
+    } else if (command.commandName == command::deleteStr) {
       detailsUndoRedoInsertText(command);
-    }
-    else if (command.commandName == command::changeStyle) {
+    } else if (command.commandName == command::changeStyle) {
       detailsUndoRedoEffects(command, true);
-    }
-    else if (command.commandName == command::changeColor) {
+    } else if (command.commandName == command::changeColor) {
       c.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, command.charStyleVector.size());
       this->setTextCursor(c);
       makeCharNormal();
-      //this->moveCursor(QTextCursor::Right);
+      // this->moveCursor(QTextCursor::Right);
     }
 
     undoRedoBuffer_->pushRedoCommand(command);
   }
-
-  return;
 }
 
-void GenTextEdit::setCommandInfo(commandInfo_t &command, const enum command commandName,
-                                 const int pos, const QString text, int length) {
+void GenTextEdit::setCommandInfo(commandInfo_t &command, const enum command commandName, const int pos,
+                                 const QString &text, int length) {
   command.commandName = commandName;
   command.pos = pos;
   command.text = text;
@@ -364,25 +348,20 @@ void GenTextEdit::redoCommand() {
 
     if (command.commandName == command::insertStr) {
       detailsUndoRedoInsertText(command);
-    }
-    else if (command.commandName == command::deleteStr) {
+    } else if (command.commandName == command::deleteStr) {
       detailsUndoRedoDeleteText(command);
-    }
-    else if (command.commandName == command::changeStyle) {
+    } else if (command.commandName == command::changeStyle) {
       detailsUndoRedoEffects(command);
-    }
-    else if (command.commandName == command::changeColor) {
+    } else if (command.commandName == command::changeColor) {
       c.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, command.charStyleVector.size());
       this->setTextCursor(c);
       const QString sColor = command.text;
       colorText(sColor);
-      //this->moveCursor(QTextCursor::Right);
+      // this->moveCursor(QTextCursor::Right);
     }
 
     undoRedoBuffer_->pushUndoCommand(command);
   }
-
-  return;
 }
 
 //---------Ctrl + n
@@ -394,9 +373,9 @@ void GenTextEdit::makeCharNormal() {
   int last = this->textCursor().selectionEnd();
 
   for (int i = first; i < last; ++i) {
-//    if (charStyleVector_[i].item == true) {
-//      continue;
-//    }
+    //    if (charStyleVector_[i].item == true) {
+    //      continue;
+    //    }
     this->textCursor().setPosition(i);
     detailsSetCharStyle(charStyleVector_[i]);
     this->textCursor().setCharFormat(textFormat);

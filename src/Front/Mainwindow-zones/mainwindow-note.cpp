@@ -1,17 +1,19 @@
-#include "Front/mainwindow.h"
 #include "Front/GeneralTextEdit/notemark.h"
+#include "Front/mainwindow.h"
 
 QUrl MainWindow::createGetNoteUrl(const int numPage) {
   QString date = QLatin1String("");
-  date.setNum(QDateTime(arrDays_[0].date).toMSecsSinceEpoch());
+  QDateTime dt;
+  dt.setDate(arrDays_[0].date);
+  date.setNum(dt.toMSecsSinceEpoch());
   QString sNumPage = QLatin1String("");
   sNumPage.setNum(numPage);
 
-  return QUrl(Network::serverUrl + Network::getNoteByDateAndPageUrl + date + "/" + sNumPage);
+  return {Network::serverUrl + Network::getNoteByDateAndPageUrl + date + "/" + sNumPage};
 }
 
 QUrl MainWindow::createPostNoteUrl() {
-  return QUrl(Network::serverUrl + Network::addNoteUrl);
+  return {Network::serverUrl + Network::addNoteUrl};
 }
 
 QByteArray MainWindow::createJsonForSendingNote(int page) {
@@ -21,7 +23,7 @@ QByteArray MainWindow::createJsonForSendingNote(int page) {
   json.insert(QStringLiteral("text"), noteText);
 
   QJsonArray jArr;
-  foreach(charStyle_t ch, ui->note->getCharStyleVector()) {
+  foreach (charStyle_t ch, ui->note->getCharStyleVector()) {
     QJsonObject jChar;
     jChar.insert(QStringLiteral("bold"), ch.bold);
     jChar.insert(QStringLiteral("italic"), ch.italic);
@@ -38,64 +40,66 @@ QByteArray MainWindow::createJsonForSendingNote(int page) {
   json.insert(QStringLiteral("effects"), QString(jDoc.toJson()));
 
   json.insert(QStringLiteral("page"), page);
-  json.insert("date", QDateTime(arrDays_[0].date).toMSecsSinceEpoch());
+  QDateTime dt;
+  dt.setDate(arrDays_[0].date);
+  json.insert(QStringLiteral("date"), dt.toMSecsSinceEpoch());
 
   QJsonDocument jsonDoc(json);
 
   return jsonDoc.toJson();
 }
 
-void MainWindow::changeNotePage(const int nButton, NoteMark * buttonPage) {
+void MainWindow::changeNotePage(const int nButton, NoteMark *buttonPage) {
   noteMakePageButtonSelectable(buttonPage);
   noteChangePage(nButton);
 }
 
 void MainWindow::noteMakePageButtonSelectable(NoteMark *button) {
-  //set previous button in default state
+  // set previous button in default state
   switch (ui->note->getNumberCurrentFile()) {
-    case 1 :
-      ui->buttonPage1->setDefaultStyle();
-      break;
-    case 2 :
-      ui->buttonPage2->setDefaultStyle();
-      break;
-    case 3 :
-      ui->buttonPage3->setDefaultStyle();
-      break;
-    case 4 :
-      ui->buttonPage4->setDefaultStyle();
-      break;
-    case 5 :
-      ui->buttonPage5->setDefaultStyle();
-      break;
-    case 6 :
-      ui->buttonPage6->setDefaultStyle();
-      break;
+  case 1:
+    ui->buttonPage1->setDefaultStyle();
+    break;
+  case 2:
+    ui->buttonPage2->setDefaultStyle();
+    break;
+  case 3:
+    ui->buttonPage3->setDefaultStyle();
+    break;
+  case 4:
+    ui->buttonPage4->setDefaultStyle();
+    break;
+  case 5:
+    ui->buttonPage5->setDefaultStyle();
+    break;
+  case 6:
+    ui->buttonPage6->setDefaultStyle();
+    break;
   }
-  //make selected
- button->setSelectableStyle();
+  // make selected
+  button->setSelectableStyle();
 }
 
 void MainWindow::noteMakePageButtonSelectable(int nPage) {
   switch (nPage) {
-    case 1 :
-      ui->buttonPage1->setSelectableStyle();
-      break;
-    case 2 :
-      ui->buttonPage2->setSelectableStyle();
-      break;
-    case 3 :
-      ui->buttonPage3->setSelectableStyle();
-      break;
-    case 4 :
-      ui->buttonPage4->setSelectableStyle();
-      break;
-    case 5 :
-      ui->buttonPage5->setSelectableStyle();
-      break;
-    case 6 :
-      ui->buttonPage6->setSelectableStyle();
-      break;
+  case 1:
+    ui->buttonPage1->setSelectableStyle();
+    break;
+  case 2:
+    ui->buttonPage2->setSelectableStyle();
+    break;
+  case 3:
+    ui->buttonPage3->setSelectableStyle();
+    break;
+  case 4:
+    ui->buttonPage4->setSelectableStyle();
+    break;
+  case 5:
+    ui->buttonPage5->setSelectableStyle();
+    break;
+  case 6:
+    ui->buttonPage6->setSelectableStyle();
+    break;
   }
 }
 
@@ -125,7 +129,6 @@ void MainWindow::on_buttonPage5_clicked() {
 void MainWindow::on_buttonPage6_clicked() {
   changeNotePage(6, ui->buttonPage6);
 }
-
 
 void MainWindow::sendPostRequestNote(int page) {
   server->sendPostRequestWithBearerToken(createPostNoteUrl(), createJsonForSendingNote(page),

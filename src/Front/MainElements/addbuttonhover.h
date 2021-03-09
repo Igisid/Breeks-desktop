@@ -13,8 +13,8 @@ public:
   void leaveEvent(QEvent *);
 
 private:
-  const QString styleSheetDefault = "border-image:url(:/Images/Front/Images/addButtonDefault.png)";
-  const QString styleSheetHover = "border-image:url(:/Images/Front/Images/addButtonHover.png)";
+  const QString styleSheetDefault = QStringLiteral("border-image:url(:/Images/Front/Images/addButtonDefault.png)");
+  const QString styleSheetHover = QStringLiteral("border-image:url(:/Images/Front/Images/addButtonHover.png)");
 };
 
 #endif // ADDBUTTONHOVER_H

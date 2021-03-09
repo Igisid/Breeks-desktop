@@ -3,8 +3,9 @@
 
 #include <QTimeEdit>
 
-class TimeEdit : public QTimeEdit
-{
+class TimeEdit : public QTimeEdit {
+  Q_OBJECT
+
 public:
   TimeEdit(QWidget *parent = nullptr);
   void wheelEvent(QWheelEvent *event);

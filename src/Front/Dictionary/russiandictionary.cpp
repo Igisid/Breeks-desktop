@@ -1,15 +1,15 @@
 #include "russiandictionary.h"
 
 #include <QDebug>
-#include <QFile>
 #include <QDir>
+#include <QFile>
 
-RussianDictionary::RussianDictionary()
-{
+RussianDictionary::RussianDictionary() {
   //.DIC
-//  QString path = "C:/Users/ypyla/PROJECTS/Breeks-desktop/src/Front/RusDic/RusDic.txt";
-//  QString path = QDir::current().path() + "/Front/RusDic/RusDic.txt";
-  QString path = QDir::current().path() + "/RusDic.txt"; //Release
+  //  QString path =
+  //  "C:/Users/ypyla/PROJECTS/Breeks-desktop/src/Front/RusDic/RusDic.txt";
+  //  QString path = QDir::current().path() + "/Front/RusDic/RusDic.txt";
+  QString path = QDir::current().path() + "/RusDic.txt"; // Release
   qDebug() << path;
 
   QFile fDic(path);
@@ -21,7 +21,7 @@ RussianDictionary::RussianDictionary()
   QTextStream sourceDic(&sDic);
   size_t nWords = 0;
   sourceDic >> nWords;
-  QString word = "";
+  QString word = QLatin1String("");
 
   for (size_t i = 0; i < nWords - 1; ++i) {
     sourceDic >> word;
@@ -33,7 +33,7 @@ bool RussianDictionary::isCorrectWord(const QString &word) {
   const int indexFirstLetter = QChar(word.at(0).toLower()).unicode() - RUS_A_CODE;
   const int length = word.length();
 
-  for(QString dicWord : arrDic_[indexFirstLetter][length]) {
+  for (const QString &dicWord : std::as_const(arrDic_)[indexFirstLetter][length]) {
     if (word == dicWord) {
       return true;
     }
@@ -42,7 +42,7 @@ bool RussianDictionary::isCorrectWord(const QString &word) {
   return false;
 }
 
-void RussianDictionary::addNewWord(const QString word) {
+void RussianDictionary::addNewWord(const QString &word) {
   if (word.length() < MAX_WORD_LEN) {
     detailsAddWord(word);
   }
@@ -50,13 +50,11 @@ void RussianDictionary::addNewWord(const QString word) {
 
 void RussianDictionary::detailsAddWord(QString word) {
   word = word.toLower();
-  while (!word.isEmpty() && !(word.at(0) >= "а" && word.at(0) <= "я")) {
+  while (!word.isEmpty() && !(word.at(0) >= QChar(L'а') && word.at(0) <= QChar(L'я'))) {
     word = word.right(word.length() - 1);
   }
   if (!word.isEmpty()) {
-    const int index = (word.at(0) != QChar(YO_UNICODE)) ?
-                        QChar(word.at(0).toLower()).unicode() - RUS_A_CODE :
-                        YO_POS;
+    const int index = (word.at(0) != QChar(YO_UNICODE)) ? QChar(word.at(0).toLower()).unicode() - RUS_A_CODE : YO_POS;
     const int length = word.length();
     arrDic_[index][length].push_back(word);
   }
@@ -65,7 +63,7 @@ void RussianDictionary::detailsAddWord(QString word) {
 void RussianDictionary::printAllWords() {
   for (int i = 0; i < N_LETTERS; ++i) {
     for (int j = 0; j < MAX_WORD_LEN; ++j) {
-      for(QString word : arrDic_[i][j]) {
+      for (const QString &word : std::as_const(arrDic_)[i][j]) {
         qDebug() << word;
       }
     }

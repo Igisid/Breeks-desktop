@@ -6,8 +6,7 @@
 
 #include "Front/datastructures.h"
 
-class DemoBreek : public QPushButton
-{
+class DemoBreek : public QPushButton {
   Q_OBJECT
 
 public:
@@ -20,10 +19,9 @@ public:
 
   void connectToQml(int indexOfEmoji, Conditions cond);
   void connectToQml(Conditions cond, bool = false);
-  void connectToQml(int indexOfEmoji, Directions dir,
-                    Conditions from, Conditions to);
+  void connectToQml(int indexOfEmoji, Directions dir, Conditions from, Conditions to);
 
-  int getEmojiIndex();
+  int getEmojiIndex() const;
 
 public slots:
   void changeEmoji(int);

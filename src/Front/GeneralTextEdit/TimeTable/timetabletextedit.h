@@ -2,11 +2,11 @@
 #define TIMETABLETEXTEDIT_H
 #include "../gentextedit.h"
 
-class TimetableTextEdit : public GenTextEdit
-{
+class TimetableTextEdit : public GenTextEdit {
+  Q_OBJECT
 public:
   TimetableTextEdit(QWidget *parent = nullptr);
-  void fillCharsAndSetText(QString text, const QVector<charStyle_t>& arr);
+  void fillCharsAndSetText(QString text, const QVector<charStyle_t> &arr);
   void keyPressEvent(QKeyEvent *event);
 };
 

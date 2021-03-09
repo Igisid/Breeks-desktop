@@ -3,14 +3,13 @@
 
 #include <QGridLayout>
 #include <QGroupBox>
+#include <QObject>
 #include <QPushButton>
 #include <QScrollArea>
-#include <QObject>
 
 #include "emojibutton.h"
 
-class EmojiHub : public QGroupBox
-{
+class EmojiHub : public QGroupBox {
   Q_OBJECT
 
 public:
@@ -24,7 +23,7 @@ public slots:
 
   void showThisSt();
 
-signals :
+signals:
   void changeEmoji(int);
   void changeEmojiSt(int);
   void close();
@@ -35,10 +34,10 @@ signals :
 private:
   QScrollArea *scrollArea_;
 
-  const static int N_EMOJIES = 71;
+  static constexpr int N_EMOJIES = 71;
   EmojiButton *arrEmoji_[N_EMOJIES];
 
-  bool isSaturday_;
+  bool isSaturday_ = false;
 };
 
 #endif // EMOJIHUB_H

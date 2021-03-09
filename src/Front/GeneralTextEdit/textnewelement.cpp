@@ -1,12 +1,9 @@
 #include <QDebug>
 
-#include "textnewelement.h"
 #include "gentextedit.h"
+#include "textnewelement.h"
 
-TextNewElement::TextNewElement(QWidget *parent) :
-  QTextEdit(parent),
-  charCounter_(0)
-{}
+TextNewElement::TextNewElement(QWidget *parent) : QTextEdit(parent), charCounter_(0) {}
 
 void TextNewElement::keyPressEvent(QKeyEvent *event) {
   QTextEdit::keyPressEvent(event);

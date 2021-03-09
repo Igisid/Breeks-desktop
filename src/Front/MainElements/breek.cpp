@@ -9,15 +9,14 @@
 
 #include <iostream>
 
-Breek::Breek(QWidget *parent):
-  QPushButton(parent),
-  state_(false),
-  workState_(Conditions::GREY_FOREGROUND),
-  width_(80),
-  height_(80),
-  quickWidget_(nullptr),
-  graphObject_(nullptr)
-{
+Breek::Breek(QWidget *parent)
+    : QPushButton(parent),
+      state_(false),
+      workState_(Conditions::GREY_FOREGROUND),
+      width_(80),
+      height_(80),
+      quickWidget_(nullptr),
+      graphObject_(nullptr) {
   this->setFocusPolicy(Qt::ClickFocus);
   this->setFixedSize(width_, height_);
   this->setFlat(true);
@@ -26,22 +25,20 @@ Breek::Breek(QWidget *parent):
   isAnimated_ = false;
 }
 
-Breek::Breek(int width, int height, QWidget *parent):
-  QPushButton(parent),
-  state_(false),
-  workState_(Conditions::GREY_FOREGROUND),
-  width_(width),
-  height_(height),
-  quickWidget_(nullptr),
-  graphObject_(nullptr)
-{
+Breek::Breek(int width, int height, QWidget *parent)
+    : QPushButton(parent),
+      state_(false),
+      workState_(Conditions::GREY_FOREGROUND),
+      width_(width),
+      height_(height),
+      quickWidget_(nullptr),
+      graphObject_(nullptr) {
   this->setFocusPolicy(Qt::ClickFocus);
   this->setFixedSize(width_, height_);
   this->setFlat(true);
 }
 
-Breek::~Breek()
-{
+Breek::~Breek() {
   graphObject_ = nullptr;
   delete quickWidget_;
 }
@@ -49,108 +46,134 @@ Breek::~Breek()
 void Breek::keyPressEvent(QKeyEvent *event) {
   int iKey = event->key();
 
-	if (event->modifiers() == 0 && !isAnimated_) {
-	  if (iKey == Qt::Key_W || QKeySequence(iKey).toString() == "Ц") {
-	    isAnimated_ = true;
+  if (event->modifiers() == 0 && !isAnimated_) {
+    if (iKey == Qt::Key_W || QKeySequence(iKey).toString() == QStringLiteral("Ц")) {
+      isAnimated_ = true;
 
-	    if (workState_ == Conditions::RED) {
-	      connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::GREY_FOREGROUND);
-	      workState_ = Conditions::GREY_FOREGROUND;
-	    }
-	    else if (workState_ == Conditions::GREY_FOREGROUND) {
-	      connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::GREEN);
-	      workState_ = Conditions::GREEN;
-	    }
-	    else if (workState_ == Conditions::GREEN) {
-	      connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::GREY_BACKGROUND);
-	      workState_ = Conditions::GREY_BACKGROUND;
-	    }
-	    else {
-	      connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::RED);
-	      workState_ = Conditions::RED;
-	    }
+      if (workState_ == Conditions::RED) {
+        connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::GREY_FOREGROUND);
+        workState_ = Conditions::GREY_FOREGROUND;
+      } else if (workState_ == Conditions::GREY_FOREGROUND) {
+        connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::GREEN);
+        workState_ = Conditions::GREEN;
+      } else if (workState_ == Conditions::GREEN) {
+        connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::GREY_BACKGROUND);
+        workState_ = Conditions::GREY_BACKGROUND;
+      } else {
+        connectToQml(nEmoj_, Directions::UPSIDE, workState_, Conditions::RED);
+        workState_ = Conditions::RED;
+      }
 
-	    QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
-	  }
+#if QT_VERSION >= 0x060000
+      auto future = QtConcurrent::task([this]() {
+        moveTimetableElement();
+      });
+#else
+      QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
+#endif
 
-	  if (iKey == Qt::Key_S || QKeySequence(iKey).toString() == "Ы") {
-	    isAnimated_ = true;
+      Q_UNUSED(future)
+    }
 
-	    if (workState_ == Conditions::RED) {
-	      connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::GREY_BACKGROUND);
-	      workState_ = Conditions::GREY_BACKGROUND;
-	    }
-	    else if (workState_ == Conditions::GREY_FOREGROUND) {
-	      connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::RED);
-	      workState_ = Conditions::RED;
-	    }
-	    else if (workState_ == Conditions::GREEN){
-	      connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::GREY_FOREGROUND);
-	      workState_ = Conditions::GREY_FOREGROUND;
-	    }
-	    else {
-	      connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::GREEN);
-	      workState_ = Conditions::GREEN;
-	    }
+    if (iKey == Qt::Key_S || QKeySequence(iKey).toString() == QStringLiteral("Ы")) {
+      isAnimated_ = true;
 
-	    QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
-	  }
+      if (workState_ == Conditions::RED) {
+        connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::GREY_BACKGROUND);
+        workState_ = Conditions::GREY_BACKGROUND;
+      } else if (workState_ == Conditions::GREY_FOREGROUND) {
+        connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::RED);
+        workState_ = Conditions::RED;
+      } else if (workState_ == Conditions::GREEN) {
+        connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::GREY_FOREGROUND);
+        workState_ = Conditions::GREY_FOREGROUND;
+      } else {
+        connectToQml(nEmoj_, Directions::DOWNSIDE, workState_, Conditions::GREEN);
+        workState_ = Conditions::GREEN;
+      }
 
-	  if (iKey == Qt::Key_D || QKeySequence(iKey).toString() == "В") {
-	    isAnimated_ = true;
-	    if (callHub_) {
-	      emit doubleClicked();
-	    }
-	    emit moveBreek(zoneIndex_, dayIndex_, true);
-	    QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
-	    emit sendPutRequest();
-	  }
+#if QT_VERSION >= 0x060000
+      auto future = QtConcurrent::task([this]() {
+        moveTimetableElement();
+      });
+#else
+      QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
+#endif
 
-	  if (iKey == Qt::Key_A || QKeySequence(iKey).toString() == "Ф") {
-	    isAnimated_ = true;
-	    if (callHub_) {
-	      emit doubleClicked();
-	    }
-	    emit moveBreek(zoneIndex_, dayIndex_, false);
-	    QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
-	    emit sendPutRequest();
-	  }
+      Q_UNUSED(future)
+    }
 
-	  if (iKey == Qt::Key_F || QKeySequence(iKey).toString() == "А") {
-	    emit doubleClicked();
-	  }
+    if (iKey == Qt::Key_D || QKeySequence(iKey).toString() == QStringLiteral("В")) {
+      isAnimated_ = true;
+      if (callHub_) {
+        emit doubleClicked();
+      }
+      emit moveBreek(zoneIndex_, dayIndex_, true);
 
-	  if (iKey == Qt::Key_Q || QKeySequence(iKey).toString() == "Й") {
-	    emit changeState(zoneIndex_, dayIndex_);
-	    emit sendPutRequest();
-	  }
-	}
+#if QT_VERSION >= 0x060000
+      auto future = QtConcurrent::task([this]() {
+        moveTimetableElement();
+      });
+#else
+      QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
+#endif
 
-	if (event->modifiers() == Qt::ControlModifier) {
-	  if (QKeySequence(iKey) == Qt::Key_A || QKeySequence(iKey).toString() == "Ф") {
-	    if (dayIndex_ > 0) {
-	      emit (changeState(zoneIndex_, dayIndex_ - 1));
-	    }
-	  }
-	  if (QKeySequence(iKey) == Qt::Key_D || QKeySequence(iKey).toString() == "В") {
-	    if (dayIndex_ < 5) {
-	      emit (changeState(zoneIndex_, dayIndex_ + 1));
-	    }
-	  }
-	}
+      Q_UNUSED(future)
+      emit sendPutRequest();
+    }
 
-	//for description
-	if (workState_ == Conditions::GREY_FOREGROUND || workState_ == Conditions::GREY_BACKGROUND || !state_) {
-	  if (state_) {
-	    emit sendSateToLilDay(zoneIndex_, dayIndex_, 0);
-	  }
-	}
-	else if (workState_ == Conditions::GREEN) {
-	  emit sendSateToLilDay(zoneIndex_, dayIndex_, 1);
-	}
-	else {
-	  emit sendSateToLilDay(zoneIndex_, dayIndex_, 2);
-	}
+    if (iKey == Qt::Key_A || QKeySequence(iKey).toString() == QStringLiteral("Ф")) {
+      isAnimated_ = true;
+      if (callHub_) {
+        emit doubleClicked();
+      }
+      emit moveBreek(zoneIndex_, dayIndex_, false);
+
+#if QT_VERSION >= 0x060000
+      auto future = QtConcurrent::task([this]() {
+        moveTimetableElement();
+      });
+#else
+      QFuture<void> future = QtConcurrent::run(this, &Breek::waitAnimationEnd);
+#endif
+
+      Q_UNUSED(future)
+      emit sendPutRequest();
+    }
+
+    if (iKey == Qt::Key_F || QKeySequence(iKey).toString() == QStringLiteral("А")) {
+      emit doubleClicked();
+    }
+
+    if (iKey == Qt::Key_Q || QKeySequence(iKey).toString() == QStringLiteral("Й")) {
+      emit changeState(zoneIndex_, dayIndex_);
+      emit sendPutRequest();
+    }
+  }
+
+  if (event->modifiers() == Qt::ControlModifier) {
+    if (QKeySequence(iKey) == Qt::Key_A || QKeySequence(iKey).toString() == QStringLiteral("Ф")) {
+      if (dayIndex_ > 0) {
+        emit(changeState(zoneIndex_, dayIndex_ - 1));
+      }
+    }
+    if (QKeySequence(iKey) == Qt::Key_D || QKeySequence(iKey).toString() == QStringLiteral("В")) {
+      if (dayIndex_ < 5) {
+        emit(changeState(zoneIndex_, dayIndex_ + 1));
+      }
+    }
+  }
+
+  // for description
+  if (workState_ == Conditions::GREY_FOREGROUND || workState_ == Conditions::GREY_BACKGROUND || !state_) {
+    if (state_) {
+      emit sendSateToLilDay(zoneIndex_, dayIndex_, 0);
+    }
+  } else if (workState_ == Conditions::GREEN) {
+    emit sendSateToLilDay(zoneIndex_, dayIndex_, 1);
+  } else {
+    emit sendSateToLilDay(zoneIndex_, dayIndex_, 2);
+  }
 }
 
 void Breek::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -172,7 +195,7 @@ void Breek::focusOutEvent(QFocusEvent *) {
   emit setZoneFocus(zoneIndex_, false);
 }
 
-bool Breek::getState() {
+bool Breek::getState() const {
   return state_;
 }
 
@@ -189,20 +212,21 @@ void Breek::setColorState(Conditions cond) {
 }
 
 void Breek::connectToQml(int indexOfEmoji, Conditions cond) {
-//  if (indexOfEmoji < 0 || indexOfEmoji > 68) return;
+  //  if (indexOfEmoji < 0 || indexOfEmoji > 68) return;
 
   // код, связывающий кнопку с qml
   if (quickWidget_ == nullptr) {
-    quickWidget_ = new QQuickWidget(QUrl("qrc:/qml/Front/Qml/qml_for_breeks.qml"), this);
+    quickWidget_ = new QQuickWidget(QUrl(QStringLiteral("qrc:/qml/Front/Qml/qml_for_breeks.qml")), this);
     quickWidget_->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    quickWidget_->setFixedSize(1.125*width_, 1.125*height_);
+    quickWidget_->setFixedSize(1.125 * width_, 1.125 * height_);
     graphObject_ = quickWidget_->rootObject();
   }
 
-  if (!quickWidget_->isVisible()) quickWidget_->setVisible(true);
+  if (!quickWidget_->isVisible())
+    quickWidget_->setVisible(true);
 
   graphObject_->setProperty("indexOfEmoji", indexOfEmoji);
-  QQmlProperty(graphObject_, "animationOn").write(false);
+  QQmlProperty(graphObject_, QStringLiteral("animationOn")).write(false);
   graphObject_->setProperty("indexOfCondFrom", cond);
   graphObject_->setProperty("indexOfCondTo", cond);
   graphObject_->setProperty("size1", 80);
@@ -213,7 +237,7 @@ void Breek::connectToQml(int indexOfEmoji, Conditions cond) {
   color.setNamedColor(QStringLiteral("#F7F7F7"));
   quickWidget_->quickWindow()->setColor(color);
 
-//  QWidget *container = QWidget::createWindowContainer(&quickWidget_, this);
+  //  QWidget *container = QWidget::createWindowContainer(&quickWidget_, this);
   // конец кода, связывающего кнопку с qml
 }
 
@@ -223,12 +247,10 @@ void Breek::connectToQml(Conditions cond, bool isShadow) {
   if (!isShadow && cond != Conditions::SHADOW) {
     graphObject_->setProperty("indexOfCondFrom", cond);
     graphObject_->setProperty("indexOfCondTo", cond);
-  }
-  else {
+  } else {
     if (isShadow) {
       graphObject_->setProperty("bigShadow", true);
-    }
-    else {
+    } else {
       graphObject_->setProperty("bigShadow", false);
     }
   }
@@ -242,15 +264,14 @@ void Breek::connectToQml(Conditions cond, bool isShadow) {
   quickWidget_->quickWindow()->setColor(color);
 }
 
-void Breek::connectToQml(int indexOfEmoji, Directions dir,
-                         Conditions from, Conditions to) {
-//  if (indexOfEmoji < 0 || indexOfEmoji > 68) return;
+void Breek::connectToQml(int indexOfEmoji, Directions dir, Conditions from, Conditions to) {
+  //  if (indexOfEmoji < 0 || indexOfEmoji > 68) return;
 
   // код, связывающий кнопку с qml
   if (quickWidget_ == nullptr) {
     quickWidget_ = new QQuickWidget(QUrl(QStringLiteral("qrc:/qml/Front/Qml/qml_for_breeks.qml")), this);
     quickWidget_->setResizeMode(QQuickWidget::SizeRootObjectToView);
-    quickWidget_->setFixedSize(1.125*width_, 1.125*height_);
+    quickWidget_->setFixedSize(1.125 * width_, 1.125 * height_);
     graphObject_ = quickWidget_->rootObject();
   }
 
@@ -263,10 +284,10 @@ void Breek::connectToQml(int indexOfEmoji, Directions dir,
   graphObject_->setProperty("size1", 80);
   graphObject_->setProperty("size2", 80);
   // работа с фоном сцены
-//  QColor color = Qt::GlobalColor::gray;
-//  quickWidget_->quickWindow()->setColor(color);
+  //  QColor color = Qt::GlobalColor::gray;
+  //  quickWidget_->quickWindow()->setColor(color);
 
-//  QWidget *container = QWidget::createWindowContainer(&quickWidget_, this);
+  //  QWidget *container = QWidget::createWindowContainer(&quickWidget_, this);
   // конец кода, связывающего кнопку с qml
 }
 
@@ -274,7 +295,7 @@ void Breek::setEmoj(int numOfEmoji) {
   nEmoj_ = numOfEmoji;
 }
 
-int Breek::getEmojiNum() {
+int Breek::getEmojiNum() const {
   return nEmoj_;
 }
 
@@ -291,8 +312,7 @@ void Breek::changeBreekState() {
   if (state_) {
     connectToQml(nEmoj_, workState_);
     callHub_ = false;
-  }
-  else {
+  } else {
     this->quickWidget_->setVisible(false);
     if (callHub_) {
       emit doubleClicked();
@@ -301,7 +321,7 @@ void Breek::changeBreekState() {
   }
 
   emit isHere(zoneIndex_, dayIndex_, state_);
-  //this->setFocus();
+  // this->setFocus();
 }
 
 void Breek::changeEmoji(int nEmoji) {

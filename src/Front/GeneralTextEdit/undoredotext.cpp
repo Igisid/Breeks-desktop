@@ -1,18 +1,17 @@
 #include "undoredotext.h"
 
-UndoRedoText::UndoRedoText()
-{}
+UndoRedoText::UndoRedoText() = default;
 
 //-----UNDO
 bool UndoRedoText::isUndoEmpty() {
   return undoStack.isEmpty();
 }
 
-void UndoRedoText::pushUndoCommand(const commandInfo_t command) {
+void UndoRedoText::pushUndoCommand(const commandInfo_t &command) {
   undoStack.push(command);
 }
 
-void UndoRedoText::popUndoCommand(commandInfo_t& command) {
+void UndoRedoText::popUndoCommand(commandInfo_t &command) {
   command = undoStack.top();
   undoStack.pop();
 }
@@ -22,11 +21,11 @@ bool UndoRedoText::isRedoEmpty() {
   return redoStack.isEmpty();
 }
 
-void UndoRedoText::pushRedoCommand(const commandInfo_t command) {
+void UndoRedoText::pushRedoCommand(const commandInfo_t &command) {
   redoStack.push(command);
 }
 
-void UndoRedoText::popRedoCommand(commandInfo_t& command) {
+void UndoRedoText::popRedoCommand(commandInfo_t &command) {
   command = redoStack.top();
   redoStack.pop();
 }

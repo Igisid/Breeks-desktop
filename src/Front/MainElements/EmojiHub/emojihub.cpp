@@ -1,11 +1,10 @@
 #include "emojihub.h"
 
 #include <QGraphicsDropShadowEffect>
-#include <QScrollBar>
 #include <QKeyEvent>
+#include <QScrollBar>
 
-EmojiHub::EmojiHub(QWidget *parent) : QGroupBox(parent)
-{
+EmojiHub::EmojiHub(QWidget *parent) : QGroupBox(parent) {
   this->setFixedSize(160, 90);
   this->setContentsMargins(0, 1, 0, 1);
 
@@ -28,33 +27,31 @@ EmojiHub::EmojiHub(QWidget *parent) : QGroupBox(parent)
   QGridLayout *layout2 = new QGridLayout;
 
   scrollArea_->setStyleSheet(QStringLiteral("background:#FFFFFF; border-radius: 8px;"));
-  //scrollArea->setFixedHeight(80);
-  scrollArea_->verticalScrollBar()->setStyleSheet(
-    "QScrollBar:vertical {"
-        "border: 0.1px solid #FFFFFF;"
-        "background: #FFFFFF;"
-        "width: 9px;"
-        "margin: 0px 0px 0px 0px;}"
+  // scrollArea->setFixedHeight(80);
+  scrollArea_->verticalScrollBar()->setStyleSheet("QScrollBar:vertical {"
+                                                  "border: 0.1px solid #FFFFFF;"
+                                                  "background: #FFFFFF;"
+                                                  "width: 9px;"
+                                                  "margin: 0px 0px 0px 0px;}"
 
-    "QScrollBar::handle:vertical {"
-        //"border: 0.5px solid #c7c7bf;"
-        "border-radius: 4px;"
-        "background: #e3e3df;"
-        "min-height: 40px;}"
+                                                  "QScrollBar::handle:vertical {"
+                                                  //"border: 0.5px solid #c7c7bf;"
+                                                  "border-radius: 4px;"
+                                                  "background: #e3e3df;"
+                                                  "min-height: 40px;}"
 
-    "QScrollBar::handle:vertical:hover {"
-        "border-radius: 4px;"
-        "background: #c7c7bf;"
-        "min-height: 40px;}"
+                                                  "QScrollBar::handle:vertical:hover {"
+                                                  "border-radius: 4px;"
+                                                  "background: #c7c7bf;"
+                                                  "min-height: 40px;}"
 
-    "QScrollBar::add-line:vertical {"
-        "border: none;"
-        "background: none;}"
+                                                  "QScrollBar::add-line:vertical {"
+                                                  "border: none;"
+                                                  "background: none;}"
 
-    "QScrollBar::sub-line:vartical {"
-        "border: none;"
-        "background: none;}"
-  );
+                                                  "QScrollBar::sub-line:vartical {"
+                                                  "border: none;"
+                                                  "background: none;}");
 
   scrollArea_->setWidgetResizable(true);
   scrollArea_->setWidget(widget);
@@ -65,7 +62,7 @@ EmojiHub::EmojiHub(QWidget *parent) : QGroupBox(parent)
     arrEmoji_[i]->setFixedSize(40, 40);
     layout2->addWidget(arrEmoji_[i], i / 2, i % 2);
 
-    connect (arrEmoji_[i], SIGNAL(chosed(int)), this, SLOT(chosed(int)));
+    connect(arrEmoji_[i], &EmojiButton::chosed, this, &EmojiHub::chosed);
   }
 
   scrollArea_->hide();
@@ -79,11 +76,10 @@ void EmojiHub::keyPressEvent(QKeyEvent *event) {
     scrollArea_->hide();
 
     if (isSaturday_) {
-      closeSt();
+      emit closeSt();
       isSaturday_ = false;
-    }
-    else {
-      close();
+    } else {
+      emit close();
     }
 
     QGroupBox::keyPressEvent(event);
@@ -93,8 +89,7 @@ void EmojiHub::keyPressEvent(QKeyEvent *event) {
 void EmojiHub::chosed(int nEmoji) {
   if (!isSaturday_) {
     emit changeEmoji(nEmoji);
-  }
-  else {
+  } else {
     emit changeEmojiSt(nEmoji);
   }
 }
@@ -102,18 +97,17 @@ void EmojiHub::chosed(int nEmoji) {
 void EmojiHub::showThis() {
   if (isSaturday_) {
     isSaturday_ = false;
-    closeSt();
+    emit closeSt();
   }
 
   if (scrollArea_->isHidden()) {
     this->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
     scrollArea_->show();
-    open();
-  }
-  else {
+    emit open();
+  } else {
     this->setStyleSheet(QStringLiteral("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
     scrollArea_->hide();
-    close();
+    emit close();
   }
 }
 
@@ -124,17 +118,16 @@ void EmojiHub::showThisSt() {
       scrollArea_->hide();
     }
     isSaturday_ = false;
-    closeSt();
+    emit closeSt();
   } else {
     if (!scrollArea_->isHidden()) {
       this->setStyleSheet(QStringLiteral("background: none; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
       scrollArea_->hide();
-      close();
-    }
-    else {
+      emit close();
+    } else {
       this->setStyleSheet(QStringLiteral("background: #FFFFFF; border-radius: 9px; border: 0.4px solid #FFFFFF;"));
       scrollArea_->show();
-      openSt();
+      emit openSt();
       isSaturday_ = true;
     }
   }
