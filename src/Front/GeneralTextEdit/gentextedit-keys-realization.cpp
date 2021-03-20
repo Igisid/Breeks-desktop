@@ -158,7 +158,7 @@ void GenTextEdit::addStar() {
 }
 
 //---------TAB
-void GenTextEdit::addTab(int &cursorPos) {
+void GenTextEdit::addTab(int & /*cursorPos*/) {
   QTextCharFormat charFormat;
   charFormat.setFontWeight(QFont::Normal);
   charStyle_t ch;

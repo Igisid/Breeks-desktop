@@ -539,7 +539,7 @@ void MainWindow::recieveMimeData(const elementData_t &data, const QPixmap &pixMa
   dragElement_ = pixMap;
 }
 
-void MainWindow::dropElement(const int dayNumber, const int dayIndex, const int elemIndex,
+void MainWindow::dropElement(const int dayNumber, const int /*dayIndex*/, const int /*elemIndex*/,
                              const elementData_t &elemData) {
   dropNoChanges();
 

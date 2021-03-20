@@ -33,13 +33,10 @@ bool RussianDictionary::isCorrectWord(const QString &word) {
   const int indexFirstLetter = QChar(word.at(0).toLower()).unicode() - RUS_A_CODE;
   const int length = word.length();
 
-  for (const QString &dicWord : std::as_const(arrDic_)[indexFirstLetter][length]) {
-    if (word == dicWord) {
-      return true;
-    }
-  }
-
-  return false;
+  return std::any_of(std::cbegin(arrDic_[indexFirstLetter][length]), std::cend(arrDic_[indexFirstLetter][length]),
+                     [&](const QString &dicWord) {
+                       return word == dicWord;
+                     });
 }
 
 void RussianDictionary::addNewWord(const QString &word) {
